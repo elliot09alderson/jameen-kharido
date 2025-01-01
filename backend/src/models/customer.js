@@ -36,6 +36,10 @@ const customerSchema = new mongoose.Schema(
       type: String, // URL to the avatar image
       default: null,
     },
+    token: {
+      type: String,
+      default: null,
+    }, tokenExpiry: { type: Date },
     recentSearch: [
       {
         image: {

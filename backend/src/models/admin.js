@@ -13,7 +13,7 @@ const adminSchema = new mongoose.Schema(
     },
     contactNumbers: {
       type: [String], // Array to store multiple contact numbers
-    //   required: true,
+      //   required: true,
     },
     avatar: {
       type: String, // URL to the avatar image
@@ -49,15 +49,9 @@ const adminSchema = new mongoose.Schema(
     requestedAds: {
       type: [
         {
-          adType: {
-            type: String,
-            required: true,
-          },
-          adId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Ad", // Reference to the Ad model
-            required: true,
-          },
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Ad", // Reference to the Ad model
+          required: true,
         },
       ],
       default: [],

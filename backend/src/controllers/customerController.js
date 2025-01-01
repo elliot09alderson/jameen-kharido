@@ -2,6 +2,7 @@ import { z } from "zod";
 import { Customer } from "../models/customer.js";
 
 import { v2 as cloudinary } from "cloudinary";
+import fs from "fs";
 
 import multer from "multer";
 import bcrypt from "bcryptjs";
@@ -54,20 +55,49 @@ export async function createCustomer(req, res) {
     phoneNumber,
   });
 
-  if (!parsed.success) {
-    return res.status(400).json({
-      success: false,
-      error: parsed.error.errors.map((err) => ({
-        path: err.path,
-        message: err.message,
-      })),
-    });
-  }
-  const encryptedPass = await bcrypt.hash(parsed.data.password, 10);
-  console.log(encryptedPass);
-  parsed.data.password = encryptedPass;
+  let file = req.file;
+  console.log(file);
+  const cropParams = {
+    gravity: "auto",
+    width: 300,
+    height: 300,
+    crop: "crop",
+  };
+
   try {
-    const customer = await Customer.create(parsed.data);
+    let result = "";
+    if (file) {
+      result = await cloudinary.uploader.upload(file?.path, {
+        folder: "jameen_kharido",
+        resource_type: "raw",
+        transformation: cropParams,
+      });
+      fs.unlink(file.path, (err) => {
+        if (err) {
+          console.error("Error deleting the file:", err);
+        } else {
+          console.log("File deleted successfully:", file.path);
+        }
+      });
+    }
+    if (!parsed.success) {
+      return res.status(400).json({
+        success: false,
+        error: parsed.error.errors.map((err) => ({
+          path: err.path,
+          message: err.message,
+        })),
+      });
+    }
+
+    const encryptedPass = await bcrypt.hash(parsed.data.password, 10);
+
+    parsed.data.password = encryptedPass;
+
+    const customer = await Customer.create({
+      ...parsed.data,
+      avatar: result.url || "",
+    });
 
     if (customer) {
       return res.status(201).json({
@@ -133,7 +163,7 @@ export async function editCustomerDetails(req, res) {
     image = result?.url;
     const updatedData = {
       ...parsed.data,
-      image,
+      avatar: image,
     };
     const updatedCustomer = await Customer.findOneAndUpdate(
       { email },

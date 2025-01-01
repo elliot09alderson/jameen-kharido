@@ -1,3 +1,8 @@
+import {
+  createAgent,
+  editAgentDetails,
+  getAgentDetails,
+} from "../controllers/agentController.js";
 import { app } from "../index.js";
 import express from "express";
 

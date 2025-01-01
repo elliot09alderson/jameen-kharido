@@ -2,16 +2,16 @@ import express from "express";
 import dotenv from "dotenv";
 import { connectDB } from "./db/db.js";
 import { customerRouter } from "./routes/customerRouter.js";
-import bodyParser from "body-parser";
 import { v2 as cloudinary } from "cloudinary";
 import multer from "multer";
+import cookieParser from "cookie-parser";
 
 // import multer from "multer";
 
 export const app = express();
 app.use(express.json());
-app.use(bodyParser.json());
 dotenv.config({ path: "./src/.env" });
+app.use(cookieParser());
 export const upload = multer({
   dest: "uploads/", // Temporary folder for file uploads
 });

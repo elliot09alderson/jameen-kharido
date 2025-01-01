@@ -3,7 +3,7 @@ import {
   editCustomerDetails,
   getCustomerDetails,
 } from "../controllers/customerController.js";
-import { app, upload } from "../index.js";
+import { upload } from "../utils/multerConfig.js";
 import express from "express";
 
 export const customerRouter = express.Router();

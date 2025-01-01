@@ -1,3 +1,8 @@
+import {
+  createAdmin,
+  editAdminDetails,
+  getAdminDeails,
+} from "../controllers/adminController.js";
 import { app } from "../index.js";
 import express from "express";
 
@@ -21,17 +26,18 @@ adminRouter.delete("/ad/:id", deleteAgentAd);
  *
  */
 adminRouter.post("/", createAdmin);
+adminRouter.get("/profile", getAdminDeails);
 
 /**
  *
  * UPDATE
  *
  */
-adminRouter.put("/:id", editAdminDeails);
+adminRouter.put("/:id", editAdminDetails);
 
 /**
  *
  * DELETE
  *
  */
-adminRouter.delete("/:id", deleteAdmin);
+// adminRouter.delete("/:id", deleteAdmin);
