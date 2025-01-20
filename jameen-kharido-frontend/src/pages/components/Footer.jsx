@@ -6,7 +6,7 @@ import app from "/image/app-store.png";
 
 const data = [
   {
-    heading: "oyo Hotels",
+    heading: "OYO Hotels",
     options: [
       { link: "Hotels near me", path: "#" },
       { link: "Hotels in Manali", path: "#" },
@@ -16,13 +16,13 @@ const data = [
       { link: "Hotels in Haridwar", path: "#" },
       { link: "Hotels in Gurgaon", path: "#" },
       { link: "Hotels in Coimbatore", path: "#" },
-      { link: "oyo Hotel UK", path: "#" },
-      { link: "oyo Vacation Homes in Europe", path: "#" },
+      { link: "OYO Hotel UK", path: "#" },
+      { link: "OYO Vacation Homes in Europe", path: "#" },
     ],
   },
 
   {
-    heading: "oyo Hotels",
+    heading: "OYO Hotels",
 
     options: [
       { link: "Hotels in Goa", path: "#" },
@@ -33,13 +33,13 @@ const data = [
       { link: "Hotels in Kolkata", path: "#" },
       { link: "Hotels in Mandarmoni", path: "#" },
       { link: "Hotels in Kasauli", path: "#" },
-      { link: "oyo Hotel USA", path: "#" },
+      { link: "OYO Hotel USA", path: "#" },
       { link: "Homes in Scandinavia", path: "#" },
     ],
   },
 
   {
-    heading: "oyo Hotels",
+    heading: "OYO Hotels",
     options: [
       { link: "Hotels in Puri", path: "#" },
       { link: "Hotels in Mussoorie", path: "#" },
@@ -49,13 +49,13 @@ const data = [
       { link: "Hotels in Ahmedabad", path: "#" },
       { link: "Hotels in Daman", path: "#" },
       { link: "Hotels in Dehradun", path: "#" },
-      { link: "oyo Hotel Mexico", path: "#" },
+      { link: "OYO Hotel Mexico", path: "#" },
       { link: "Homes in Southern Europe", path: "#" },
     ],
   },
 
   {
-    heading: "oyo Hotels",
+    heading: "OYO Hotels",
     options: [
       { link: "Hotels in Mahabaleshwar", path: "#" },
       { link: "Hotels in Pondicherry", path: "#" },
@@ -65,13 +65,13 @@ const data = [
       { link: "Hotels in Shillong", path: "#" },
       { link: "Hotels in Yercaud", path: "#" },
       { link: "Travel Guide", path: "#" },
-      { link: "oyo Hotel Brasil", path: "#" },
+      { link: "OYO Hotel Brasil", path: "#" },
       { link: "Belvilla Holiday Homes", path: "#" },
     ],
   },
 
   {
-    heading: "oyo Hotels",
+    heading: "OYO Hotels",
     options: [
       { link: "Hotels in Jaipur", path: "#" },
       { link: "Hotels in Delhi", path: "#" },
@@ -87,7 +87,7 @@ const data = [
   },
 
   {
-    heading: "oyo Hotels",
+    heading: "OYO Hotels",
     options: [
       { link: "Hotels in Shimla", path: "#" },
       { link: "Hotels in Mumbai", path: "#" },
@@ -97,23 +97,23 @@ const data = [
       { link: "Hotels in Varanasi", path: "#" },
       { link: "Hotels in Madurai", path: "#" },
       { link: "Coupons", path: "#" },
-      { link: "oyo Hotel Indonesia", path: "#" },
+      { link: "OYO Hotel Indonesia", path: "#" },
       { link: "Traum Holiday Homes", path: "#" },
     ],
   },
 ];
 const Footer = () => {
   return (
-    <div className="bg-[#6D787D] w-full ">
-      <div className="flex justify-between  py-6 border-b px-16">
-        <div className="flex justify-center gap-6 items-center">
+    <div className="bg-[rgb(109,120,125)] w-full ">
+      <div className="lg:flex-row flex  flex-col lg:justify-between py-6 border-b lg:px-16">
+        <div className="flex flex-col lg:flex-row justify-center gap-6 items-center">
           <img className="w-20" src={logo} alt="" />
-          <p className="text-white text-2xl font-bold">
+          <p className="text-white lg:text-2xl text-xl text-center font-bold">
             World's leading chain of hotels and homes
           </p>
         </div>
-        <div className="flex justify-between gap-4 items-center">
-          <p className="text-white text-2xl font-bold">
+        <div className="flex lg:flex-row flex-col  lg:justify-between gap-4 items-center">
+          <p className="text-white lg:text-2xl text-xl text-center font-bold">
             Join our network and grow your business!
           </p>
           <div className="bg-white flex p-3 px-4 gap-2 rounded-md">
@@ -125,17 +125,17 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="flex px-20   py-6 ">
-        <div className="flex w-1/3 flex-col border-r gap-6">
-          <p className="text-white font-medium">
-            Download oyo app for exciting offers.
+      <div className="flex lg:flex-row gap-12 flex-col lg:px-20   py-6 ">
+        <div className="flex lg:w-1/3 items-center lg:items-start flex-col  lg:border-r gap-6">
+          <p className="text-white font-medium ">
+            Download OYO app for exciting offers.
           </p>
           <div className="flex  items-start  justify-start gap-4 ">
             <img className="p-0 w-40 h-18" src={app} alt="" />
             <img src={play} className=" w-40 h-18   " alt="playstore" />
           </div>
         </div>
-        <div className="flex gap-14 pl-10 pr-24 text-white font-normal justify-center items-center ">
+        <div className="flex gap-14 lg:pl-10 lg:pr-24 text-white font-normal justify-center items-center ">
           <div className="flex flex-col gap-4">
             <p>About Us</p>
             <p>Teams / Careers</p>
@@ -143,10 +143,10 @@ const Footer = () => {
             <p>Support</p>
           </div>
           <div className="flex flex-col gap-4">
-            <p>Official oyo Blog</p>
+            <p>Official OYO Blog</p>
             <p>Investor Relations</p>
-            <p>oyo Circle</p>
-            <p>oyo Frames</p>
+            <p>OYO Circle</p>
+            <p>OYO Frames</p>
           </div>
         </div>
         <div className="flex gap-14 px-10 border-l text-white font-normal justify-center items-center">
@@ -165,7 +165,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="flex justify-between border-t px-20 text-sm   text-white  py-12">
+      <div className="flex lg:flex-row flex-col lg:justify-between gap-8  border-t px-16 lg:px-20 text-sm   text-white  py-12">
         {data.map((item, idx) => {
           return (
             <div className="flex flex-col font-bold gap-3">

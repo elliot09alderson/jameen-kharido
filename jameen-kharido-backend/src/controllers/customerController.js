@@ -158,6 +158,7 @@ export async function fetchApprovedAds(req, res) {
 export async function fetchAdDetail(req, res) {
   const { slug, type } = req.query;
 
+
   if (!slug || !type) {
     return res
       .status(400)
@@ -191,6 +192,7 @@ export async function fetchAdDetail(req, res) {
     res.status(500).json({ error: "Internal server error" });
   }
 }
+
 export async function createCustomer(req, res) {
   const { name, email, password, address, phoneNumber } = req.body;
 
@@ -351,6 +353,34 @@ export async function editCustomerDetails(req, res) {
         success: true,
         message: "Data updated successfully",
         updatedCustomer,
+      });
+    } else {
+      return res.status(404).json({
+        success: false,
+        message: "Customer not found",
+      });
+    }
+  } catch (error) {
+    console.log("Error in updating customer:", error.message);
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+}
+export async function deactivateCustomer(req, res) {
+  const customerid = req.customer._id;
+
+  try {
+    // If an image is provided, upload to Cloudinary
+
+    // Update the customer document
+    const deleteCustomer = await Customer.findByIdAndDelete(customerid);
+
+    if (deleteCustomer) {
+      return res.status(200).json({
+        success: true,
+        message: "Customer Delete successfully",
       });
     } else {
       return res.status(404).json({

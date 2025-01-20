@@ -111,6 +111,7 @@ class AuthMiddleware {
   adminMiddleware = async (req, res, next) => {
     try {
       const token = req.cookies.adminToken || req.headers.Authorization;
+
       if (!token) {
         return res
           .status(401)
@@ -118,47 +119,34 @@ class AuthMiddleware {
       }
 
       // Decode the token
-      const decToken = decryptToken(token, process.env.SECRET_KEY);
-      // console.log("decToken", decToken);
-      const decoded = jwt.verify(decToken, process.env.ACCESS_TOKEN_SECRET);
-      if (!decoded) {
-        jwt.verify(
-          admin.token,
-          process.env.REFRESH_TOKEN_SECRET,
-          async (err, decoded) => {
-            if (err)
-              return res
-                .status(403)
-                .json({ message: "Invalid or expired refresh token" });
+      const decToken = await decryptToken(token, process.env.SECRET_KEY);
 
-            // Generate a new access token
-            const newAccessToken = generateAccessToken({
-              email: admin.email,
-              _id: admin._id,
-            });
+      const decoded = jwt.verify(decToken, process.env.JWT_SECRET);
+      //  console.log(decoded)
 
-            // res.json({ accessToken: newAccessToken });
-          }
-        );
-      }
-
+      // Find the customer and check token and expiry
       const admin = await Admin.findOne({
         _id: decoded._id,
         token: decToken,
-      }).select("-password");
+      }).select("-password ");
+
+      // console.log(customer)
 
       if (!admin) {
         return res.status(401).json({ error: "Unauthorized: Invalid token" });
       }
 
       // Check if token is expired
-      if (new Date() > agent.tokenExpiry) {
+      if (new Date() > admin.tokenExpiry) {
         return res.status(401).json({ error: "Unauthorized: Token expired" });
+      } else {
+        // Token is still valid
+        res.status(200);
       }
 
       // Attach customer info to the request
       req.admin = admin;
-      console.log("passed");
+      // console.log(req.customer)
       next();
     } catch (error) {
       console.error("Error in authMiddleware:", error);

@@ -1,7 +1,20 @@
-import { createAdmin } from "../controllers/adminController.js";
+import {
+  createAdmin,
+  deleteAdmin,
+  deleteAgentAd,
+  editAdminDetails,
+  getAdDetails,
+  getAdminDeails,
+  getAgent,
+  getAllAgents,
+  getAllBlockedAgents,
+  getRequestedAds,
+  getVerifiedAgents,
+} from "../controllers/adminController.js";
 import { app } from "../index.js";
 import express from "express";
 import { upload } from "../utils/multerConfig.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 export const adminRouter = express.Router();
 /**
@@ -9,13 +22,6 @@ export const adminRouter = express.Router();
  * READ
  *
  */
-// adminRouter.get("/agents", getAllAgents);
-// adminRouter.get("/agent/:id", getAgentDetails);
-// adminRouter.get("/agents/blocked", getAllBlockedAgents);
-// adminRouter.get("/agents/verified", getVerifiedAgents);
-// adminRouter.get("/ad/pending", getRequestedAds);
-// adminRouter.get("/ad/:id", getAdDetails);
-// adminRouter.delete("/ad/:id", deleteAgentAd);
 
 /**
  *
@@ -23,18 +29,41 @@ export const adminRouter = express.Router();
  *
  */
 adminRouter.post("/", upload.single("image"), createAdmin);
-// adminRouter.get("/profile", getAdminDeails);
+adminRouter.get("/me", authMiddleware.adminMiddleware, getAdminDeails);
 
-// /**
-//  *
-//  * UPDATE
-//  *
-//  */
-// adminRouter.put("/:id", editAdminDetails);
+adminRouter.put(
+  "/",
+  authMiddleware.adminMiddleware,
+  upload.single("image"),
+  editAdminDetails
+);
 
 /**
  *
  * DELETE
  *
  */
-// adminRouter.delete("/:id", deleteAdmin);
+adminRouter.delete("/", authMiddleware.adminMiddleware, deleteAdmin);
+
+adminRouter.get("/agents", authMiddleware.adminMiddleware, getAllAgents);
+adminRouter.get("/agent/:id", authMiddleware.adminMiddleware, getAgent);
+
+adminRouter.get("/ad/:id", authMiddleware.adminMiddleware, getAdDetails);
+
+adminRouter.delete("/ad/:id", authMiddleware.adminMiddleware, deleteAgentAd);
+
+adminRouter.get(
+  "/agents/blocked",
+  authMiddleware.adminMiddleware,
+  getAllBlockedAgents
+);
+
+adminRouter.get(
+  "/agents/verified",
+  authMiddleware.adminMiddleware,
+  getVerifiedAgents
+);
+
+
+
+adminRouter.get("/ad/pending/hello", authMiddleware.adminMiddleware, getRequestedAds);

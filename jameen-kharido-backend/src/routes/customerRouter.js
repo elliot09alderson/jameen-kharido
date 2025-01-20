@@ -1,5 +1,6 @@
 import {
   createCustomer,
+  deactivateCustomer,
   editCustomerDetails,
   fetchAdDetail,
   fetchApprovedAds,
@@ -11,16 +12,10 @@ import { upload } from "../utils/multerConfig.js";
 import express from "express";
 
 export const customerRouter = express.Router();
-/**
- *
- * READ
- *
- */
 
 customerRouter.get("/ads", fetchApprovedAds);
 
 customerRouter.get("/ad/detail", fetchAdDetail);
-
 
 customerRouter.get(
   "/me",
@@ -47,4 +42,8 @@ customerRouter.put("/", authMiddleware.customerMiddleware, editCustomerDetails);
  * DELETE
  *
  */
-// customerRouter.delete("/homes/:id", deactivateCustomer);
+customerRouter.delete(
+  "/",
+  authMiddleware.customerMiddleware,
+  deactivateCustomer
+);

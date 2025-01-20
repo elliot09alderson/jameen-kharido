@@ -27,7 +27,7 @@ app.use(express.json());
 dotenv.config({ path: "./src/.env" });
 app.use(cookieParser());
 export const upload = multer({
-  dest: "uploads/", // Temporary folder for file uploads
+  dest: "uploads/", 
 });
 
 cloudinary.config({

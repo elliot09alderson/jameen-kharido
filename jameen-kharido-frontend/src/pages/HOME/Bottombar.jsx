@@ -96,7 +96,7 @@ const Bottombar = () => {
                   isHovered == item.cityName
                     ? " h-[500px]  px-8 p-4 opacity-100 "
                     : "  opacity-0 h-0"
-                }  flex items-start absolute justify-center flex-col  gap-5 overflow-hidden min-w-[400px] duration-500 border top-12 left-4 lg:left-0 bg-white text-black`}
+                }  flex items-start absolute justify-center flex-col  gap-5 overflow-hidden w-full lg:min-w-[400px] duration-500 border top-12 left-0 lg:left-0 bg-white text-black`}
               >
                 {item.areas.map(
                   (item, idx) =>

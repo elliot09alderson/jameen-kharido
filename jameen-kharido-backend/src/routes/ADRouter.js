@@ -38,6 +38,7 @@ AdRouter.get("/shops", getAllShopAds);
 //  * CREATE
 //  *
 //  */
+
 AdRouter.post(
   "/homes",
   authMiddleware.agentMiddleware,
@@ -115,6 +116,7 @@ AdRouter.delete(
   authMiddleware.agentMiddleware,
   deleteFlatAd
 );
+
 AdRouter.delete(
   "/lands/:homeAdId",
   authMiddleware.agentMiddleware,

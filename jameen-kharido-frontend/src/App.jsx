@@ -76,7 +76,7 @@ const App = () => {
     <div>
       <RouterProvider router={router} />
 
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 };
