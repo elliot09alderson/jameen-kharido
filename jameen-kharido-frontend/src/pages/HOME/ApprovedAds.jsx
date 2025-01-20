@@ -31,7 +31,7 @@ const ApprovedAds = () => {
     });
   };
   return (
-    <div className="flex flex-row px-24 flex-wrap gap-12 items-center justify-center py-24">
+    <div className="flex flex-row px-24 flex-wrap gap-12 items-center justify-center lg:py-24">
       {ApprovedAds.length > 0 ? (
         ApprovedAds.map((item, idx) => {
           return (

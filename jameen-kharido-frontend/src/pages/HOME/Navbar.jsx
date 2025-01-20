@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "/image/oyo-logo1.png";
 import internet from "/image/internet.png";
 import login from "/image/login.png";
+import { FaSearch } from "react-icons/fa";
+import Searchbar from "./Searchbar";
 import {
   Activity,
   BriefcaseBusiness,
@@ -12,31 +14,28 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import user from "/image/user.webp"
+import user from "/image/user.webp";
 import { customer_logout } from "../../rtk/slices/authSlice";
 import { toast } from "react-toastify";
- 
+import Search from "../../component/Search";
 
 const Navbar = () => {
-
-
-
   const { userInfo, successMessage, errorMessage, loader } = useSelector(
     (slice) => slice.auth
   );
 
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const [search, setSearch] = useState(false);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
-      // toast("dfsfffdsf")
-      if (successMessage) {
-        toast.success(successMessage);
-      } else if (errorMessage) {
-        toast.error(errorMessage);
-      }
-    }, [successMessage, errorMessage]);
-  
+    if (successMessage) {
+      toast.success(successMessage);
+    } else if (errorMessage) {
+      toast.error(errorMessage);
+    }
+  }, [successMessage, errorMessage]);
 
   const NavbarData = [
     {
@@ -45,7 +44,7 @@ const Navbar = () => {
       icon: Activity,
     },
     {
-      title: "OYO for Business",
+      title: "oyo for Business",
       subheading: "Trusted by 5000 Corporates",
       icon: BriefcaseBusiness,
     },
@@ -62,40 +61,51 @@ const Navbar = () => {
     },
   ];
   return (
-    <div className="flex flex-row w-full  h-[70px] px-16 shadow-lg">
-      <div className="flex w-full  justify-between">
-        <div className="content-center ">
-          <img className=" w-24 " src={logo} alt="oyo-icon" />
-        </div>
-       
-        <div className="flex  items-center   justify-center">
-          {NavbarData.map((item, idx) => (
-            <div className="flex px-6 justify-center  cursor-pointer h-[70px]  border-r  ">
-              <div className="flex items-center pr-4">
-                <item.icon className=" text-[#939393]" />
-              </div>
-              <div className="flex flex-col justify-center  ">
-                <p className="font-semibold text-md">{item.title}</p>
-                <p className="text-xs font-normal text-gray-500">
-                  {item.subheading}
-                </p>
-              </div>
-            </div>
-          ))}
-          <div className="flex cursol-pointer items-center gap-1 h-20 px-4 border-r  ">
-            <Globe className="stroke-1 " />
-            <p className="font-bold">English </p>
+    <div className=" w-full  h-[70px] shadow-lg px-4 lg:px-10 ">
+      {!search && (
+        <div className="flex items-center justify-between">
+          <div className="">
+            <img className="w-12 lg:w-24 " src={logo} alt="oyo-icon" />
           </div>
-          <div className="flex items-center px-4 gap-2 font-bold">
-            <div className="size-9 rounded-full border">
+
+          <div className="flex">
+            {NavbarData.map((item, idx) => (
+              <div className="px-6 justify-center  cursor-pointer h-[70px] hidden lg:flex  border-r  ">
+                <div className="flex items-center pr-4">
+                  <item.icon className=" text-[#939393]" />
+                </div>
+                <div className="flex flex-col justify-center  ">
+                  <p className="font-semibold text-md">{item.title}</p>
+                  <p className="text-xs font-normal text-gray-500">
+                    {item.subheading}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div
+            className="flex lg:hidden cursol-pointer items-center gap-1 h-20  lg:border-r overflow-hidden "
+            onClick={() => setSearch(true)}
+          >
+            <FaSearch className="stroke-1 size-5" />
+          </div>
+
+          <div className="flex cursol-pointer items-center gap-1 h-20 px-4  ">
+            <Globe className="stroke-1 " />
+            <p className="font-bold flex">English </p>
+          </div>
+
+          <div className="flex items-center gap-2 font-bold">
+            <div className=" rounded-full border">
               <img
                 src={userInfo ? userInfo?.avatar : user}
-                className="size-9 object-container rounded-full overflow-hidden text-center"
+                className="lg:size-9 hidden lg:flex size-6 object-container rounded-full overflow-hidden text-center"
                 alt="profile"
               />
             </div>
             {!userInfo?.token ? (
-              <div>
+              <div className="text-md ">
                 <Link to="/login">
                   <span>Login</span>
                 </Link>{" "}
@@ -106,12 +116,24 @@ const Navbar = () => {
               </div>
             ) : (
               <Link to="/login">
-                <span onClick={()=>dispatch(customer_logout()).then(()=>navigate("/"))}>Logout</span>
+                {/* <span
+                  className="text-xs lg:text-lg "
+                  onClick={() =>
+                    dispatch(customer_logout()).then(() => navigate("/"))
+                  }
+                >
+                  Logout
+                </span> */}
               </Link>
             )}
           </div>
         </div>
-      </div>
+      )}
+      {search && (
+        <div className=" bg-white flex items-center h-full justify-center">
+          <Search setSearch={setSearch} />
+        </div>
+      )}
     </div>
   );
 };

@@ -6,7 +6,7 @@ import app from "/image/app-store.png";
 
 const data = [
   {
-    heading: "OYO Hotels",
+    heading: "oyo Hotels",
     options: [
       { link: "Hotels near me", path: "#" },
       { link: "Hotels in Manali", path: "#" },
@@ -16,13 +16,13 @@ const data = [
       { link: "Hotels in Haridwar", path: "#" },
       { link: "Hotels in Gurgaon", path: "#" },
       { link: "Hotels in Coimbatore", path: "#" },
-      { link: "OYO Hotel UK", path: "#" },
-      { link: "OYO Vacation Homes in Europe", path: "#" },
+      { link: "oyo Hotel UK", path: "#" },
+      { link: "oyo Vacation Homes in Europe", path: "#" },
     ],
   },
 
   {
-    heading: "OYO Hotels",
+    heading: "oyo Hotels",
 
     options: [
       { link: "Hotels in Goa", path: "#" },
@@ -33,13 +33,13 @@ const data = [
       { link: "Hotels in Kolkata", path: "#" },
       { link: "Hotels in Mandarmoni", path: "#" },
       { link: "Hotels in Kasauli", path: "#" },
-      { link: "OYO Hotel USA", path: "#" },
+      { link: "oyo Hotel USA", path: "#" },
       { link: "Homes in Scandinavia", path: "#" },
     ],
   },
 
   {
-    heading: "OYO Hotels",
+    heading: "oyo Hotels",
     options: [
       { link: "Hotels in Puri", path: "#" },
       { link: "Hotels in Mussoorie", path: "#" },
@@ -49,13 +49,13 @@ const data = [
       { link: "Hotels in Ahmedabad", path: "#" },
       { link: "Hotels in Daman", path: "#" },
       { link: "Hotels in Dehradun", path: "#" },
-      { link: "OYO Hotel Mexico", path: "#" },
+      { link: "oyo Hotel Mexico", path: "#" },
       { link: "Homes in Southern Europe", path: "#" },
     ],
   },
 
   {
-    heading: "OYO Hotels",
+    heading: "oyo Hotels",
     options: [
       { link: "Hotels in Mahabaleshwar", path: "#" },
       { link: "Hotels in Pondicherry", path: "#" },
@@ -65,13 +65,13 @@ const data = [
       { link: "Hotels in Shillong", path: "#" },
       { link: "Hotels in Yercaud", path: "#" },
       { link: "Travel Guide", path: "#" },
-      { link: "OYO Hotel Brasil", path: "#" },
+      { link: "oyo Hotel Brasil", path: "#" },
       { link: "Belvilla Holiday Homes", path: "#" },
     ],
   },
 
   {
-    heading: "OYO Hotels",
+    heading: "oyo Hotels",
     options: [
       { link: "Hotels in Jaipur", path: "#" },
       { link: "Hotels in Delhi", path: "#" },
@@ -87,7 +87,7 @@ const data = [
   },
 
   {
-    heading: "OYO Hotels",
+    heading: "oyo Hotels",
     options: [
       { link: "Hotels in Shimla", path: "#" },
       { link: "Hotels in Mumbai", path: "#" },
@@ -97,7 +97,7 @@ const data = [
       { link: "Hotels in Varanasi", path: "#" },
       { link: "Hotels in Madurai", path: "#" },
       { link: "Coupons", path: "#" },
-      { link: "OYO Hotel Indonesia", path: "#" },
+      { link: "oyo Hotel Indonesia", path: "#" },
       { link: "Traum Holiday Homes", path: "#" },
     ],
   },
@@ -128,7 +128,7 @@ const Footer = () => {
       <div className="flex px-20   py-6 ">
         <div className="flex w-1/3 flex-col border-r gap-6">
           <p className="text-white font-medium">
-            Download OYO app for exciting offers.
+            Download oyo app for exciting offers.
           </p>
           <div className="flex  items-start  justify-start gap-4 ">
             <img className="p-0 w-40 h-18" src={app} alt="" />
@@ -143,10 +143,10 @@ const Footer = () => {
             <p>Support</p>
           </div>
           <div className="flex flex-col gap-4">
-            <p>Official OYO Blog</p>
+            <p>Official oyo Blog</p>
             <p>Investor Relations</p>
-            <p>OYO Circle</p>
-            <p>OYO Frames</p>
+            <p>oyo Circle</p>
+            <p>oyo Frames</p>
           </div>
         </div>
         <div className="flex gap-14 px-10 border-l text-white font-normal justify-center items-center">

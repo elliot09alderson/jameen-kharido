@@ -78,7 +78,7 @@ const Register = () => {
         <div className="py-4 ">
           <div className="flex flex-col gap-4">
             <h1 className="text-gray-400 text-sm pb-2">
-              Welcome to <span className="font-semibold">Jamin kharido</span>
+              Welcome to <span className="font-semibold">oyo kharido</span>
             </h1>
             <h1 className="text-black  text-3xl font-bold pb-4">
               Get started with your email or phone number

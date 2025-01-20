@@ -7,8 +7,8 @@ import { Link } from "react-router-dom";
 const Bottombar = () => {
   const [isHovered, setIsHovered] = useState(false);
   return (
-    <div className="h-10 bg-slate-300 px-20">
-      <div className="flex items-center justify-center gap-12 h-full">
+    <div className="h-10 bg-slate-300 lg:px-20  w-full relative">
+      <div className="flex items-center lg:justify-center lg:gap-12 h-full w-full  ">
         {[
           {
             cityName: "Bhilai",
@@ -79,7 +79,7 @@ const Bottombar = () => {
           },
         ]?.map((item, idx) => (
           <div
-            className={`flex gap-0 relative  p-2 px-5 group items-center justify-center ${
+            className={`flex gap-0 lg:relative  p-2 px-5 group items-center justify-center ${
               isHovered == item.cityName && " bg-gray-400 "
             } `}
             onMouseEnter={() => setIsHovered(item.cityName)}
@@ -95,8 +95,8 @@ const Bottombar = () => {
                 className={` ${
                   isHovered == item.cityName
                     ? " h-[500px]  px-8 p-4 opacity-100 "
-                    : "  opacity-0 h-0 "
-                }  flex items-start absolute justify-center flex-col  gap-5 overflow-hidden min-w-[300px] duration-500 border top-12 left-0 bg-white text-black`}
+                    : "  opacity-0 h-0"
+                }  flex items-start absolute justify-center flex-col  gap-5 overflow-hidden min-w-[400px] duration-500 border top-12 left-4 lg:left-0 bg-white text-black`}
               >
                 {item.areas.map(
                   (item, idx) =>

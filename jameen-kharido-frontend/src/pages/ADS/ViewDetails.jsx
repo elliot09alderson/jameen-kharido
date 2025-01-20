@@ -5,7 +5,7 @@ import bedroom2 from "/image/bedroom2.jpg";
 import bedroom3 from "/image/bedroom3.jpg";
 import bedroom4 from "/image/bedroom4.jpg";
 import bedroom5 from "/image/bedroom5.jpg";
-import superoyo from "/public/image/SuperOYO.png";
+import superoyo from "/public/image/Superoyo.png";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
@@ -169,7 +169,7 @@ const ViewDetails = () => {
               <div className="flex flex-col  gap-4">
                 <div className="flex border w-[90px] items-center justify-center py-1  bg-[#F5F5F5] gap-1">
                   <img className="w-[14px] h-[11px]" src={superoyo} alt="" />
-                  <p className="text-xs font-medium ">Super OYO</p>
+                  <p className="text-xs font-medium ">Super oyo</p>
                 </div>
                 <div className="flex pl-6">
                   <p>5.0 · Check-in rating Delightful experience</p>
@@ -225,7 +225,7 @@ const ViewDetails = () => {
             )}
           </div>
           <div className="flex flex-col ">
-            <p className="text-2xl font-bold py-4">About this OYO</p>
+            <p className="text-2xl font-bold py-4">About this oyo</p>
             <p className="">Affordable hotel at prime location.</p>
           </div>
           <div>

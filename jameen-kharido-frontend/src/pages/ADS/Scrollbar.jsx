@@ -61,7 +61,7 @@ const Scrollbar = () => {
 
     {
       checked: false,
-      title: "OYOs Welcomes couples",
+      title: "oyos Welcomes couples",
     },
 
     {
@@ -76,14 +76,14 @@ const Scrollbar = () => {
 
     {
       checked: false,
-      title: "OYO Recommended",
+      title: "oyo Recommended",
     },
   ];
 
   const categoriesData = [
     {
       checked: false,
-      title: "OYO Rooms",
+      title: "oyo Rooms",
       dis: "Super affordable Stays with essential amenities",
     },
     {
@@ -94,12 +94,12 @@ const Scrollbar = () => {
     {
       checked: false,
       title: "Townhouse",
-      dis: "your friendly, premium neighbourhood hotel- serviced by OYO",
+      dis: "your friendly, premium neighbourhood hotel- serviced by oyo",
     },
     {
       checked: false,
       title: "Flagship",
-      dis: "Affordable hotels at prime locations- serviced by OYO",
+      dis: "Affordable hotels at prime locations- serviced by oyo",
     },
     {
       checked: false,
@@ -114,7 +114,7 @@ const Scrollbar = () => {
     {
       checked: false,
       title: "Collection O",
-      dis: "A space for new-age travellers & Serviced by OYO",
+      dis: "A space for new-age travellers & Serviced by oyo",
     },
     {
       checked: false,
@@ -242,7 +242,7 @@ const Scrollbar = () => {
           <div className="flex justify-between   ">
             <div className="flex justify-center  items-center">
               <p className="text-xl font-bold">
-                Hotels in Koramangala, Bangalore (124 OYOs)
+                Hotels in Koramangala, Bangalore (124 oyos)
               </p>
             </div>
             <div className="flex justify-between w-1/2   ">

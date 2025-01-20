@@ -6,17 +6,19 @@ import Banner from "./Banner";
 import Destination from "./Destination";
 import Footer from "../components/Footer";
 import ApprovedAds from "./ApprovedAds";
+import Category from "./Category";
 const Home = () => {
   return (
-    <div>
+    <div >
       <Navbar />
-      <Bottombar />
+     <Bottombar /> 
       <Searchbar />
       <Banner />
+      <Category/>
       <ApprovedAds />
 
       <Destination />
-      <Footer />
+      {/* <Footer />  */}
     </div>
   );
 };
