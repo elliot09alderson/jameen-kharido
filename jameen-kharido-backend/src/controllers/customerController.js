@@ -158,22 +158,21 @@ export async function fetchApprovedAds(req, res) {
 export async function fetchAdDetail(req, res) {
   const { slug, type } = req.query;
 
-
   if (!slug || !type) {
     return res
       .status(400)
       .json({ error: "Missing slug or type in query parameters" });
   }
+  const xtype = type.toUpperCase();
 
-  // Map the type to the corresponding model
   const models = {
-    Home: Home,
-    Land: Land,
-    Shop: Shop,
-    Flat: Flat,
+    HOME: Home,
+    LAND: Land,
+    SHOP: Shop,
+    FLAT: Flat,
   };
 
-  const Model = models[type];
+  const Model = models[xtype];
 
   if (!Model) {
     return res.status(400).json({ error: "Invalid type provided" });
@@ -192,7 +191,39 @@ export async function fetchAdDetail(req, res) {
     res.status(500).json({ error: "Internal server error" });
   }
 }
+export async function fetchAdByCategory(req, res) {
+  const { catname } = req.params;
 
+  const models = {
+    HOME: Home,
+    LAND: Land,
+    SHOP: Shop,
+    FLAT: Flat,
+  };
+
+  const Model = models[catname.toUpperCase()];
+
+  if (!Model) {
+    return res.status(400).json({ error: "Invalid type provided" });
+  }
+
+  try {
+    const ads = await Model.find({ isApproved: false });
+
+    if (!ads) {
+      return res.status(404).json({ error: "Ad not found" });
+    }
+
+    res.json({
+      success: true,
+      data: ads,
+      message: `${catname} ads fetched successfully`,
+    });
+  } catch (error) {
+    console.error("Error fetching ad detail:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
 export async function createCustomer(req, res) {
   const { name, email, password, address, phoneNumber } = req.body;
 

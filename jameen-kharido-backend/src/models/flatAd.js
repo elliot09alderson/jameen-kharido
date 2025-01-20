@@ -56,6 +56,7 @@ const flatAdSchema = new mongoose.Schema(
       type: [String], // Array of amenities like elevator, water, parking, etc.
       default: [],
     },
+    type: { type: String, default: "flat" },
     age: {
       type: Number, // Age of the flat in years
       //   required: true,

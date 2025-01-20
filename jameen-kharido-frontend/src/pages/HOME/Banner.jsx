@@ -2,6 +2,7 @@ import React from "react";
 import banner from "/image/banner.avif";
 import banner2 from "/image/banner2.jpg";
 import fire from "/image/fire.jpg";
+
 const Banner = () => {
   return (
     <div className="flex flex-col gap-4  p-4 lg:gap-16 lg:pt-14 lg:pb-6 lg:px-20">

@@ -17,6 +17,7 @@ const landAdSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    type: { type: String, default: "land" },
     location: {
       type: String,
       required: true,

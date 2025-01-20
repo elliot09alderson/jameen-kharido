@@ -5,7 +5,7 @@ import bedroom2 from "/image/bedroom2.jpg";
 import bedroom3 from "/image/bedroom3.jpg";
 import bedroom4 from "/image/bedroom4.jpg";
 import bedroom5 from "/image/bedroom5.jpg";
-import superoyo from "/public/image/Superoyo.png";
+import superoyo from "/public/image/SuperOYO.png";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles

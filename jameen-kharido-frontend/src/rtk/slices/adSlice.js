@@ -36,6 +36,26 @@ export const get_ad_detail = createAsyncThunk(
   }
 );
 
+export const fetch_Ad_by_category = createAsyncThunk(
+  "customer/fetch_Ad_by_category",
+  async ({ catname }, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await api.get(
+        `/customer/ads/${catname}`,
+
+        { withCredentials: true }
+      );
+
+      return fulfillWithValue(data);
+    } catch (error) {
+      const errorData = error.response?.data || {
+        message: "Something went wrong",
+      };
+      return rejectWithValue(errorData);
+    }
+  }
+);
+
 const adSlice = createSlice({
   name: "ad",
   initialState: {
@@ -81,6 +101,20 @@ const adSlice = createSlice({
         state.successMessage = payload?.message || "Fetched successfully";
         state.loader = false;
         state.adDetail = payload.adDetail;
+      })
+
+      .addCase(fetch_Ad_by_category.pending, (state) => {
+        state.loader = true;
+        state.errorMessage = "";
+      })
+      .addCase(fetch_Ad_by_category.rejected, (state, { payload }) => {
+        state.errorMessage = payload?.message || "An error occurred";
+        state.loader = false;
+      })
+      .addCase(fetch_Ad_by_category.fulfilled, (state, { payload }) => {
+        state.successMessage = payload?.message || "Fetched successfully";
+        state.loader = false;
+        state.ApprovedAds = payload.data;
       });
   },
 });

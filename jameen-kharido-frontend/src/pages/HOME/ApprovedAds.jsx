@@ -20,9 +20,7 @@ const ApprovedAds = () => {
   useEffect(() => {
     disatch(get_approved_ads());
   }, []);
-  useEffect(() => {
-    // console.log(ApprovedAds);
-  }, [ApprovedAds]);
+  useEffect(() => {}, [ApprovedAds]);
   const navigate = useNavigate();
 
   const handleNavigate = (type, slug) => {

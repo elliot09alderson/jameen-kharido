@@ -17,6 +17,7 @@ const homeAdSchema = new mongoose.Schema(
     pincode: {
       type: Number,
     },
+    type: { type: String, default: "home" },
     location: {
       type: String,
       required: true,
@@ -39,7 +40,7 @@ const homeAdSchema = new mongoose.Schema(
     },
     parking: {
       type: Boolean,
-      default: false, 
+      default: false,
     },
     slug: { type: String, required: true, trim: true },
 

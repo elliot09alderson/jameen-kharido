@@ -17,6 +17,7 @@ const shopAdSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    type: { type: String, default: "shop" },
     location: {
       type: String,
       required: true,

@@ -1,12 +1,12 @@
 import React from "react";
 import Navbar from "../HOME/Navbar.jsx";
-import Scrollbar from "./Scrollbar";
+import Ad from "./Ad.jsx";
 import GetLocation from "./GetLocation";
 const Ads = () => {
   return (
     <div>
-      <Navbar/>
-      <Scrollbar />
+      <Navbar />
+      <Ad />
       <GetLocation />
     </div>
   );
