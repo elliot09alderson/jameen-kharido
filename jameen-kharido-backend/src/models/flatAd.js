@@ -47,7 +47,10 @@ const flatAdSchema = new mongoose.Schema(
       type: Number,
       //   required: true,
     },
-
+    isApproved: {
+      type: Boolean,
+      default: false,
+    },
     furnished: {
       enum: ["unfurnished", "furnished", "semifurnished"], // true for furnished, false for unfurnished
       //   required: true,

@@ -40,28 +40,28 @@ AdRouter.get("/shops", getAllShopAds);
 //  */
 
 AdRouter.post(
-  "/homes",
+  "/home",
   authMiddleware.agentMiddleware,
   upload.array("homeAdImages", 5),
   postHomeAd
 );
 
 AdRouter.post(
-  "/flats",
+  "/flat",
   authMiddleware.agentMiddleware,
   upload.array("flatsAdImages", 5),
   postFlatAd
 );
 
 AdRouter.post(
-  "/lands",
+  "/land",
   authMiddleware.agentMiddleware,
   upload.array("landsAdImages", 5),
   postLandAd
 );
 
 AdRouter.post(
-  "/shops",
+  "/shop",
   authMiddleware.agentMiddleware,
   upload.array("shopsAdImages", 5),
   postShopAd

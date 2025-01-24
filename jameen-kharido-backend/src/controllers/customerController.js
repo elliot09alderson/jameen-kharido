@@ -208,7 +208,7 @@ export async function fetchAdByCategory(req, res) {
   }
 
   try {
-    const ads = await Model.find({ isApproved: false });
+    const ads = await Model.find();
 
     if (!ads) {
       return res.status(404).json({ error: "Ad not found" });

@@ -5,7 +5,7 @@ import { Flat } from "../models/flatAd.js";
 import { Land } from "../models/landAd.js";
 import { Shop } from "../models/shopAd.js";
 import { generateSlug } from "../utils/function.js";
-
+import fs from "fs";
 const homePropertySchema = z.object({
   agentId: z.string().nonempty("Agent ID is required"), // Assuming
   title: z.string().nonempty("Title is required"),
@@ -104,8 +104,6 @@ export const postHomeAd = async (req, res) => {
       }
     }
 
-    console.log(uploadResults);
-
     if (!parsed.success) {
       return res.status(400).json({
         success: false,
@@ -156,7 +154,7 @@ const flatPropertySchema = z.object({
   floor: z.number().optional(),
   totalFloors: z.number().optional(),
   furnished: z.enum(["unfurnished", "furnished", "semifurnished"]).optional(),
-  amenities: z.array(z.string()).optional().default([]),
+  amenities: z.string().optional().default(""),
   age: z.number().positive("Age must be a positive number").optional(),
   maintenance: z
     .number()
@@ -228,7 +226,6 @@ export const postFlatAd = async (req, res) => {
 
   try {
     const uploadResults = [];
-    console.log(files);
 
     if (files) {
       for (const file of files) {
@@ -262,9 +259,12 @@ export const postFlatAd = async (req, res) => {
       });
     }
     // console.log("parsed success");
-
+    const amenitiesArray = parsed.data.amenities.split(" ");
+    const slug = generateSlug(parsed.data.title);
     const flatAd = await Flat.create({
       ...parsed.data,
+      slug,
+      amenities: amenitiesArray,
       images: uploadResults,
     });
 
@@ -278,7 +278,7 @@ export const postFlatAd = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error.me);
+    console.log(error.message);
   }
 };
 
@@ -548,22 +548,8 @@ export const postShopAd = async (req, res) => {
 
 export const getAllHomeAds = async (req, res) => {
   try {
-    // // Validate if the agentId is provided
-    // if (!id) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Agent ID is required",
-    //   });
-    // }
-
-    // Fetch the agent details by ID
     const homeAd = await Home.find();
-    // .populate("connections", "name email phoneNumber")
-    // .populate("clients", "name email phoneNumber")
-    // .populate("documents")
-    // .select("-password");
 
-    // If agent not found, return a 404 error
     if (!homeAd) {
       return res.status(404).json({
         success: false,
@@ -587,37 +573,21 @@ export const getAllHomeAds = async (req, res) => {
 };
 
 export const getAllFlatAds = async (req, res) => {
-  // console.log(homeAdId);
-
   try {
-    // // Validate if the agentId is provided
-    // if (!id) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Agent ID is required",
-    //   });
-    // }
-
     // Fetch the agent details by ID
-    const homeAd = await Flat.find();
-    // .populate("connections", "name email phoneNumber")
-    // .populate("clients", "name email phoneNumber")
-    // .populate("documents")
-    // .select("-password");
+    const flatAds = await Flat.find();
 
-    // If agent not found, return a 404 error
-    if (!homeAd) {
+    if (!flatAds) {
       return res.status(404).json({
         success: false,
-        message: "home Ads not found",
+        message: "Flat Ads not found",
       });
     }
 
-    // Return the agent details
     return res.status(200).json({
       success: true,
-      message: "LandAds details fetched successfully",
-      homeAd,
+      message: "LandAds fetched successfully",
+      flatAds,
     });
   } catch (error) {
     console.error(error.message);
