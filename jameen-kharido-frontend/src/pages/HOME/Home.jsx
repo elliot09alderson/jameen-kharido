@@ -7,14 +7,16 @@ import Destination from "./Destination";
 import Footer from "../components/Footer";
 import ApprovedAds from "./ApprovedAds";
 import Category from "./Category";
+import QuickLinks from "../../component/QuickLinks";
 const Home = () => {
   return (
-    <div >
+    <div>
       <Navbar />
-     <Bottombar /> 
+      <QuickLinks />
+      <Bottombar />
       <Searchbar />
       <Banner />
-      <Category/>
+      <Category />
       <ApprovedAds />
 
       <Destination />

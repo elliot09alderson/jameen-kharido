@@ -1,275 +1,420 @@
 import React, { useEffect, useState } from "react";
-import { useFormik } from "formik";
+import { useDispatch } from "react-redux";
+import { Formik } from "formik";
+import { Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import {
+  AirVent,
+  BatteryCharging,
+  CarTaxiFront,
+  Cctv,
+  Check,
+  CircleCheck,
+  CreditCard,
+  DoorClosed,
+  Heart,
+  Heater,
+  Hotel,
+  Images,
+  MonitorStop,
+  Pencil,
+  Percent,
+  QrCode,
+  ShieldAlert,
+  Star,
+  Wifi,
+  Tv,
+} from "lucide-react";
+import { upload_home_Ad } from "../../../rtk/slices/adSlice";
+
+const amenitiesData = [
+  { name: "inverter", label: "Inverter", Icon: BatteryCharging },
+  { name: "tv", label: "TV", Icon: Tv },
+  { name: "wifi", label: "Wifi", Icon: Wifi },
+  { name: "decor", label: "Decor", Icon: Heart },
+
+  { name: "visit", label: "Visit", Icon: CarTaxiFront },
+  { name: "cctv", label: "CCTV", Icon: Cctv },
+  { name: "ventillator", label: "Ventillator", Icon: AirVent },
+];
 
 const PostHome = () => {
-  const [uploadedImages, setUploadedImages] = useState([]);
-  const [remove, setRemove] = useState(null);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const dispatch = useDispatch();
+  const handleIconClick = (itemName) => {
+    setSelectedItems((prevSelectedItems) => {
+      if (prevSelectedItems.includes(itemName)) {
+        return prevSelectedItems.filter((item) => item !== itemName);
+      } else {
+        return [...prevSelectedItems, itemName];
+      }
+    });
+  };
   useEffect(() => {
-    setUploadedImages(
-      uploadedImages.filter((item, idx) => {
-        console.log(idx != remove);
-        return idx != remove;
-      })
-    );
-  }, [remove]);
-  const formik = useFormik({
-    initialValues: {
-      agentId: "",
-      title: "",
-      description: "",
-      pincode: "",
-      location: "",
-      price: "",
-      area: "",
-      bedrooms: "",
-      bathrooms: "",
-      parking: false,
-      garden: false,
-      amenities: [],
-      nearby: [],
-      images: [],
-    },
-    validationSchema: Yup.object({
-      agentId: Yup.string().required("Agent ID is required"),
-      title: Yup.string().required("Title is required"),
-      description: Yup.string().required("Description is required"),
-      location: Yup.string().required("Location is required"),
-      price: Yup.number()
-        .required("Price is required")
-        .positive("Price must be positive"),
-      area: Yup.number()
-        .required("Area is required")
-        .positive("Area must be positive"),
-      bedrooms: Yup.number()
-        .required("Bedrooms are required")
-        .min(1, "Must have at least 1 bedroom"),
-      bathrooms: Yup.number()
-        .required("Bathrooms are required")
-        .min(1, "Must have at least 1 bathroom"),
-    }),
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
-      // Handle form submission, e.g., sending the data to the server
-    },
+    console.log(selectedItems);
+  }, [selectedItems]);
+
+  const getIconColor = (itemName) => {
+    return selectedItems.includes(itemName) ? "text-blue-500" : "text-gray-500";
+  };
+  useEffect(() => {
+    console.log(ErrorMessage);
+  }, [ErrorMessage]);
+  const initialValues = {
+    title: "",
+    description: "",
+    pincode: "",
+    type: "home",
+    location: "",
+    nearby: "",
+
+    price: "",
+    area: "",
+    bedrooms: "",
+    bathrooms: "",
+    parking: false,
+
+    garden: false,
+
+    isApproved: false,
+  };
+  const [images, setImages] = useState([]);
+  const validationSchema = Yup.object({
+    title: Yup.string().required("Title is required"),
+    description: Yup.string().required("Description is required"),
+    pincode: Yup.number().typeError("Pincode must be a number"),
+    location: Yup.string().required("Location is required"),
+    nearby: Yup.string().required("NearBy is required"),
+
+    price: Yup.number()
+      .required("Price is required")
+      .typeError("Price must be a number"),
+    area: Yup.number()
+      .required("Area is required")
+      .typeError("Area must be a number"),
+    bedrooms: Yup.number()
+      .required("Bedrooms are required")
+      .typeError("Bedrooms must be a number"),
+    bathrooms: Yup.number()
+      .required("Bathrooms are required")
+      .typeError("Bathrooms must be a number"),
+
+    nearby: Yup.array().of(Yup.string()),
   });
+  const [previewImages, setPreviewImages] = useState([]);
+  const handleSubmit = (values) => {
+    const formData = new FormData();
+
+    Object.keys(values).forEach((key) => {
+      formData.append(key, values[key]);
+    });
+
+    images.forEach((image) => {
+      formData.append("images", image);
+    });
+    selectedItems.forEach((ameniti) => {
+      formData.append("amenities", ameniti);
+    });
+    dispatch(upload_home_Ad(formData));
+
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ": " + pair[1]);
+    }
+  };
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    const imageUrls = files.map((file) => URL.createObjectURL(file));
-    setUploadedImages((prevImages) => [...prevImages, ...imageUrls]);
-    formik.setFieldValue("images", [...formik.values.images, ...files]);
+
+    if (files.length + previewImages.length > 5) {
+      alert("You can only upload up to 5 images.");
+      return;
+    }
+
+    const filePreviews = files.map((file) => URL.createObjectURL(file));
+    setPreviewImages((prev) => [...prev, ...filePreviews]);
+
+    setImages([...images, ...files]);
   };
+  const removeImage = (index) => {
+    const updatedPreviewImages = previewImages.filter((_, i) => i !== index);
+    setPreviewImages(updatedPreviewImages);
 
+    const updatedImages = values.images.filter((_, i) => i !== index);
+    setImages(updatedImages);
+  };
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded-md shadow-md">
-      <h1 className="text-2xl font-bold mb-6">Add Home Advertisement</h1>
-      <form onSubmit={formik.handleSubmit}>
-        <div>
-          {/* Agent ID */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1" htmlFor="agentId">
-              Agent ID
-            </label>
-            <input
-              id="agentId"
-              name="agentId"
-              type="text"
-              className="w-full p-2 border rounded"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.agentId}
-            />
-            {formik.touched.agentId && formik.errors.agentId ? (
-              <div className="text-red-500 text-sm">
-                {formik.errors.agentId}
-              </div>
-            ) : null}
-          </div>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+    >
+      {({ values, setFieldValue, errors }) => (
+        <Form className="max-w-4xl mx-auto p-6 bg-white shadow-md outline:none focus:outline-none rounded-md">
+          <h2 className="lg:text-3xl font-bold mb-4">
+            Post Home Advertisement
+          </h2>
 
-          {/* Title */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1" htmlFor="title">
-              Title
-            </label>
-            <input
-              id="title"
-              name="title"
-              type="text"
-              className="w-full p-2 border rounded"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.title}
-            />
-            {formik.touched.title && formik.errors.title ? (
-              <div className="text-red-500 text-sm">{formik.errors.title}</div>
-            ) : null}
-          </div>
-
-          {/* Description */}
           <div className="mb-4">
             <label
-              className="block text-sm font-medium mb-1"
+              htmlFor="title"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Title
+            </label>
+            <Field
+              name="title"
+              type="text"
+              placeholder="Raj Niwas"
+              className="w-full mt-1 p-2 border border-gray-300 outline:none focus:outline-none rounded-md focus:ring focus:ring-blue-500"
+            />
+            <ErrorMessage
+              name="title"
+              component="div"
+              className="text-red-500 text-sm mt-1"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label
               htmlFor="description"
+              className="block text-sm font-medium text-gray-700"
             >
               Description
             </label>
-            <textarea
-              id="description"
+            <Field
               name="description"
-              className="w-full p-2 border rounded"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.description}
+              placeholder="fully furnished 3 bhk Bunglaw with all facilities"
+              as="textarea"
+              className="w-full mt-1 p-2 border border-gray-300 outline:none focus:outline-none rounded-md focus:ring focus:ring-blue-500"
             />
-            {formik.touched.description && formik.errors.description ? (
-              <div className="text-red-500 text-sm">
-                {formik.errors.description}
-              </div>
-            ) : null}
+            <ErrorMessage
+              name="description"
+              component="div"
+              className="text-red-500 text-sm mt-1"
+            />
           </div>
 
-          {/* Price */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1" htmlFor="price">
-              Price
-            </label>
-            <input
-              id="price"
-              name="price"
-              type="number"
-              className="w-full p-2 border rounded"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.price}
-            />
-            {formik.touched.price && formik.errors.price ? (
-              <div className="text-red-500 text-sm">{formik.errors.price}</div>
-            ) : null}
-          </div>
-
-          {/* Area */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1" htmlFor="area">
-              Area (sq ft)
-            </label>
-            <input
-              id="area"
-              name="area"
-              type="number"
-              className="w-full p-2 border rounded"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.area}
-            />
-            {formik.touched.area && formik.errors.area ? (
-              <div className="text-red-500 text-sm">{formik.errors.area}</div>
-            ) : null}
-          </div>
-
-          {/* Bedrooms */}
           <div className="mb-4">
             <label
-              className="block text-sm font-medium mb-1"
-              htmlFor="bedrooms"
+              htmlFor="location"
+              className="block text-sm font-medium text-gray-700"
             >
-              Bedrooms
+              Location
             </label>
-            <input
-              id="bedrooms"
-              name="bedrooms"
-              type="number"
-              className="w-full p-2 border rounded"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.bedrooms}
+            <Field
+              name="location"
+              placeholder="State, City, Area, Landmark"
+              type="text"
+              className="w-full outline:none focus:outline-none mt-1 p-2 border border-gray-300 outline:none focus:outline-none rounded-md focus:ring focus:ring-blue-500"
             />
-            {formik.touched.bedrooms && formik.errors.bedrooms ? (
-              <div className="text-red-500 text-sm">
-                {formik.errors.bedrooms}
-              </div>
-            ) : null}
+            <ErrorMessage
+              name="location"
+              component="div"
+              className="text-red-500 text-sm mt-1"
+            />
           </div>
-
-          {/* Bathrooms */}
           <div className="mb-4">
             <label
-              className="block text-sm font-medium mb-1"
-              htmlFor="bathrooms"
+              htmlFor="nearby"
+              className="block text-sm font-medium text-gray-700"
             >
-              Bathrooms
+              Near By
             </label>
-            <input
-              id="bathrooms"
-              name="bathrooms"
-              type="number"
-              className="w-full p-2 border rounded"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.bathrooms}
+            <Field
+              name="nearby"
+              type="text"
+              placeholder="1 km from durg railway station"
+              className="w-full mt-1 p-2 border border-gray-300 outline:none focus:outline-none rounded-md focus:ring focus:ring-blue-500"
             />
-            {formik.touched.bathrooms && formik.errors.bathrooms ? (
-              <div className="text-red-500 text-sm">
-                {formik.errors.bathrooms}
-              </div>
-            ) : null}
+            <ErrorMessage
+              name="nearby"
+              component="div"
+              className="text-red-500 text-sm mt-1"
+            />
           </div>
-        </div>
-        {/* Image Upload */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">
-            Upload Images
-          </label>
-          <input
-            type="file"
-            name="images"
-            accept="image/*"
-            multiple
-            className="w-full p-2 border rounded"
-            onChange={handleImageChange}
-          />
-        </div>
+          <div className="flex items-center gap-5 ">
+            <div className="mb-4">
+              <label
+                htmlFor="price"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Price
+              </label>
+              <Field
+                name="price"
+                type="text"
+                className="w-full mt-1 p-2 border border-gray-300 outline:none focus:outline-none rounded-md focus:ring focus:ring-blue-500"
+              />
+              <ErrorMessage
+                name="price"
+                component="div"
+                className="text-red-500 text-sm mt-1"
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="pincode"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Pincode
+              </label>
+              <Field
+                name="pincode"
+                type="text"
+                className="w-full mt-1 p-2 border border-gray-300 outline:none focus:outline-none rounded-md focus:ring focus:ring-blue-500"
+              />
+              <ErrorMessage
+                name="pincode"
+                component="div"
+                className="text-red-500 text-sm mt-1"
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="area"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Area (sq ft)
+              </label>
+              <Field
+                name="area"
+                type="text"
+                placeholder="total carpet area in sqft"
+                className="w-full mt-1 p-2 border border-gray-300 outline:none focus:outline-none rounded-md focus:ring focus:ring-blue-500"
+              />
+              <ErrorMessage
+                name="area"
+                component="div"
+                className="text-red-500 text-sm mt-1"
+              />
+            </div>
+          </div>
 
-        {/* Display Uploaded Images */}
-        {uploadedImages.length > 0 && (
-          <div className="mb-4">
-            <h3 className="text-lg font-medium mb-2">Uploaded Images</h3>
-            <div className="grid grid-cols-3 gap-4 ">
-              {uploadedImages.map((img, idx) => (
+          <div className="flex items-center gap-5 ">
+            <div className="mb-4">
+              <label
+                htmlFor="bedrooms"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Bedrooms
+              </label>
+              <Field
+                name="bedrooms"
+                type="text"
+                className="w-full mt-1 p-2 border border-gray-300 outline:none focus:outline-none rounded-md focus:ring focus:ring-blue-500"
+              />
+              <ErrorMessage
+                name="bedrooms"
+                component="div"
+                className="text-red-500 text-sm mt-1"
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="bathrooms"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Bathrooms
+              </label>
+              <Field
+                name="bathrooms"
+                type="text"
+                className="w-full mt-1 p-2 border border-gray-300 outline:none focus:outline-none rounded-md focus:ring focus:ring-blue-500"
+              />
+              <ErrorMessage
+                name="bathrooms"
+                component="div"
+                className="text-red-500 text-sm mt-1"
+              />
+            </div>
+          </div>
+          <div className="flex items-center gap-12 py-4">
+            <div className="mb-4 flex items-center">
+              <Field name="parking" type="checkbox" className="mr-2" />
+              <label
+                htmlFor="parking"
+                className="text-sm font-medium text-gray-700"
+              >
+                Parking Available
+              </label>
+            </div>
+            <div className="mb-4 flex items-center">
+              <Field name="garden" type="checkbox" className="mr-2" />
+              <label
+                htmlFor="garden"
+                className="text-sm font-medium text-gray-700"
+              >
+                Garden Available
+              </label>
+            </div>
+          </div>
+
+          <h3 className="font-semibold">Select Amenities</h3>
+          <div className="p-4 pt-2">
+            <div className="flex space-x-4 py-2 items-center  flex-wrap gap-4">
+              {amenitiesData.map(({ name, label, Icon }) => (
                 <div
-                  key={idx}
-                  className="flex justify-center relative cursor-pointer"
+                  key={name}
+                  className="flex items-center flex-col justify-center"
+                  onClick={() => handleIconClick(name)}
                 >
-                  <img
-                    src={img}
-                    alt={`image-${idx}`}
-                    className="w-30 h-30 object-cover rounded "
-                  />
-                  <p
-                    className=" bg-red-500 rounded-full p-1 px-3 absolute top-1 right-1 text-xl z-10 text-white"
-                    onClick={() => {
-                      setRemove(idx);
-                    }}
-                  >
-                    x
-                  </p>
+                  <Icon className={`cursor-pointer ${getIconColor(name)}`} />
+                  <p>{label}</p>
                 </div>
               ))}
             </div>
           </div>
-        )}
-
-        {/* Submit Button */}
-        <div>
+          <div className="mb-4">
+            <label
+              htmlFor="images"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Images
+            </label>
+            <input
+              type="file"
+              id="images"
+              accept="image/*"
+              multiple
+              onChange={(e) => handleImageChange(e)}
+              className="w-full mt-1 p-2 border border-gray-300 outline:none focus:outline-none rounded-md focus:ring focus:ring-blue-500"
+            />
+            {previewImages.length > 0 && (
+              <div className="flex flex-wrap gap-4 mt-6">
+                {previewImages.map((image, index) => (
+                  <div key={index} className="relative w-24 h-24 mr-4 mb-4">
+                    <img
+                      src={image}
+                      alt={`Preview ${index}`}
+                      className="w-full h-full object-cover rounded-md"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 px-2 text-xs"
+                    >
+                      X
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            {console.log(errors)}
+            <ErrorMessage
+              name="images"
+              component="div"
+              className="text-red-500 text-sm mt-1"
+            />
+          </div>
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="w-full p-3 bg-blue-500 text-white font-bold rounded-md hover:bg-blue-600"
           >
             Submit
           </button>
-        </div>
-      </form>
-    </div>
+        </Form>
+      )}
+    </Formik>
   );
 };
 

@@ -23,14 +23,7 @@ const Ad = () => {
   const { catname } = useParams();
   const dispatch = useDispatch();
   const { ApprovedAds } = useSelector((slice) => slice.ad);
-  const [category, setCategory] = useState(null);
-  const navigate = useNavigate();
-  const [catFilter, setCatFilter] = useState([
-    { name: "Home", isChecked: false },
-    { name: "Land", isChecked: false },
-    { name: "Shop", isChecked: false },
-    { name: "Flat", isChecked: false },
-  ]);
+
   useEffect(() => {
     dispatch(fetch_Ad_by_category({ catname }));
   }, [catname]);
@@ -328,27 +321,6 @@ const Ad = () => {
                 </p>
               )}
             </div>
-          </div>
-        </div>
-        <div className="flex flex-col py-6 border-b gap-4 justify-center">
-          <p className="text-base font-bold ">Categories</p>
-          <div className="cursor-pointer gap-4 flex flex-col  ">
-            {/* {catFilter.map((item, idx) => (
-              <div
-                key={idx + item.name}
-                className="flex gap-2  justify-start pl-2 items-center"
-              >
-                <input
-                  type="checkbox"
-                  checked={item.isChecked}
-                  onChange={(e) => {
-                    dispatch(filterByCat());
-                  }}
-                  className=""
-                />
-                <h1>{item}</h1>
-              </div>
-            ))} */}
           </div>
         </div>
       </div>

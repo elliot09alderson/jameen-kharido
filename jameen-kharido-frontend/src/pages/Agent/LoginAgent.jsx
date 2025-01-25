@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { customer_login, customer_logout } from "../../rtk/slices/authSlice.js";
+import {
+  agent_login,
+  customer_login,
+  customer_logout,
+} from "../../rtk/slices/authSlice.js";
 import { Link, useNavigate } from "react-router-dom";
 import home from "/image/home.jpg";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import logo from "/image/oyo-logo1.png";
+import logo from "/jameen.png";
 import { toast } from "react-toastify";
-const Login = () => {
+const LoginAgent = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const dispatch = useDispatch();
 
   const validationSchema = Yup.object({
@@ -21,9 +27,7 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const { userInfo, successMessage, errorMessage, loader } = useSelector(
-    (slice) => slice.auth
-  );
+
 
   return (
     <div
@@ -44,15 +48,15 @@ const Login = () => {
         </div>
       </div>
       <div className="bg-white lg:absolute  h-full lg:h-[96vh] lg:w-[27vw] top-4 right-4 items-center  lg:rounded-lg p-10 flex flex-col gap-4 z-10 px-16">
-        <div className="py-4 mt-20">
+        <div className="py-4 mt-20 w-full">
           <div className="flex flex-col gap-4">
-            <img src={logo} alt="" className="h-8 w-20 mb-2" />
+            <img src={logo} alt="" className="w-32 mb-2" />
 
             <h1 className="text-gray-400 text-sm pb-2">
-              Welcome to <span className="font-semibold">oyo kharido</span>
+              Welcome to <span className="font-semibold">jameen kharido</span>
             </h1>
             <h1 className="text-black  text-3xl font-bold pb-8">
-              Get started with your email or phone number
+              Login to upload Ad
             </h1>
           </div>
           <Formik
@@ -60,13 +64,13 @@ const Login = () => {
             validationSchema={validationSchema}
             onSubmit={(values) => {
               // console.log("Form Data:", values);
-              const res = dispatch(customer_login(values)).then(() =>
-                navigate("/")
+              const res = dispatch(agent_login(values)).then(() =>
+                navigate("/agent/post")
               );
 
               console.log("rerer", res.error);
 
-       
+              // console.log(userInfo)
             }}
           >
             {({ isSubmitting }) => (
@@ -117,7 +121,7 @@ const Login = () => {
                 forgot password
               </h1>
             </Link>
-            <Link to="/register">
+            <Link to="/agent/register">
               <h1 className="capitalize cursor-pointer text-blue-600 underline">
                 Register
               </h1>
@@ -143,4 +147,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginAgent;

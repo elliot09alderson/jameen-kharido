@@ -10,48 +10,98 @@ import Register from "./pages/Register/Register.jsx";
 import ProtectedRoute from "./Routes/ProtectedRoute.jsx";
 import PublicRoute from "./Routes/PublicRoute.jsx";
 import { Slide } from "react-toastify";
+import { toast } from "react-toastify";
 import PostHome from "./pages/POST/HOME/PostHome.jsx";
 import PostFlat from "./pages/POST/FLAT/PostFlat.jsx";
 import POST from "./pages/POST/POST.jsx";
 import PostShop from "./pages/POST/SHOP/PostShop.jsx";
+import AdsByCategory from "./pages/ADS/AdsByCategory.jsx";
+import RegisterAgent from "./pages/Agent/RegisterAgent.jsx";
+import LoginAgent from "./pages/Agent/LoginAgent.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import PublicAgentRouter from "./pages/ProtectedAuth/PublicAgentRouter.jsx";
+import PivateAgentRouter from "./pages/ProtectedAuth/PivateAgentRouter.jsx";
+import { useEffect } from "react";
+import { check_session, messageClear } from "./rtk/slices/authSlice.js";
 
 const App = () => {
+  const dispatch = useDispatch();
+  const { userInfo, successMessage, errorMessage, loader } = useSelector(
+    (slice) => slice.auth
+  );
+  useEffect(() => {
+    dispatch(check_session());
+    console.log(userInfo);
+  }, []);
+
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(messageClear());
+    } else if (errorMessage) {
+      toast.error(errorMessage);
+      dispatch(messageClear());
+    }
+  }, [successMessage, errorMessage]);
   const router = createBrowserRouter([
     {
       path: "/",
       element: <Home />,
     },
-    ,
+    {
+      path: "/agent",
+      children: [
+        {
+          element: <PublicAgentRouter />,
+          children: [
+            { path: "register", element: <RegisterAgent /> },
+            { path: "login", element: <LoginAgent /> },
+          ],
+        },
+
+        {
+          path: "post",
+
+          children: [
+            {
+              element: <PivateAgentRouter />,
+              children: [
+                {
+                  index: true,
+                  element: <POST />,
+                },
+                {
+                  path: "flat",
+                  element: <PostFlat />,
+                },
+                {
+                  path: "home",
+                  element: <PostHome />,
+                },
+                {
+                  path: "shop",
+                  element: <PostShop />,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+
+    {
+      path: "/ads",
+      element: <Ads />,
+    },
     {
       path: "/ads/:catname",
-      element: <Ads />,
+      element: <AdsByCategory />,
     },
     {
       path: "/ad/detail",
       element: <ViewDetails />,
     },
-    {
-      path: "/post",
 
-      children: [
-        {
-          index: true, // Renders this when only /post is visited
-          element: <POST />,
-        },
-        {
-          path: "flat",
-          element: <PostFlat />,
-        },
-        {
-          path: "home",
-          element: <PostHome />,
-        },
-        {
-          path: "shop",
-          element: <PostShop />,
-        },
-      ],
-    },
     {
       path: "/",
       element: <PublicRoute />, // Public routes wrapper

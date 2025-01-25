@@ -4,6 +4,8 @@ import internet from "/image/internet.png";
 import login from "/image/login.png";
 import { FaSearch } from "react-icons/fa";
 import Searchbar from "./Searchbar";
+import user from "/image/user.webp";
+
 import {
   Activity,
   BriefcaseBusiness,
@@ -14,8 +16,12 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import user from "/image/user.webp";
-import { customer_logout } from "../../rtk/slices/authSlice";
+
+import {
+  admin_logout,
+  customer_logout,
+  agent_logout,
+} from "../../rtk/slices/authSlice.js";
 import { toast } from "react-toastify";
 import Search from "../../component/Search";
 
@@ -44,7 +50,7 @@ const Navbar = () => {
       icon: Activity,
     },
     {
-      title: "oyo for Business",
+      title: "join for Business",
       subheading: "Trusted by 5000 Corporates",
       icon: BriefcaseBusiness,
     },
@@ -90,12 +96,6 @@ const Navbar = () => {
           >
             <FaSearch className="stroke-1 size-5" />
           </div>
-
-          <div className="flex cursol-pointer items-center gap-1 h-20 px-4  ">
-            <Globe className="stroke-1 " />
-            <p className="font-bold flex">English </p>
-          </div>
-
           <div className="flex items-center gap-2 font-bold">
             <div className=" rounded-full border">
               <img
@@ -116,16 +116,24 @@ const Navbar = () => {
               </div>
             ) : (
               <Link to="/login">
-                {/* <span
+                <span
                   className="text-xs lg:text-lg "
-                  onClick={() =>
-                    dispatch(customer_logout()).then(() => navigate("/"))
-                  }
+                  onClick={() => {
+                    userInfo?.role == "agent"
+                      ? dispatch(agent_logout()).then(() => navigate("/"))
+                      : userInfo?.role == "admin"
+                      ? dispatch(admin_logout()).then(() => navigate("/"))
+                      : dispatch(customer_logout()).then(() => navigate("/"));
+                  }}
                 >
                   Logout
-                </span> */}
+                </span>
               </Link>
             )}
+          </div>
+          <div className="flex cursol-pointer items-center gap-1 h-20 px-4  ">
+            <Globe className="stroke-1 " />
+            <p className="font-bold flex">English </p>
           </div>
         </div>
       )}

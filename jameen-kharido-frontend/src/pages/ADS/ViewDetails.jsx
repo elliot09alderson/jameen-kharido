@@ -13,6 +13,11 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Mousewheel, Keyboard, FreeMode } from "swiper/modules";
+
+import "swiper/css";
+import { useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { get_ad_detail } from "../../rtk/slices/adSlice";
 import {
   AirVent,
   BatteryCharging,
@@ -33,12 +38,8 @@ import {
   ShieldAlert,
   Star,
   Wifi,
+  Tv,
 } from "lucide-react";
-import "swiper/css";
-import { useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { get_ad_detail } from "../../rtk/slices/adSlice";
-
 const ViewDetails = () => {
   const { loader, adDetail, errorMessage, successMessage } = useSelector(
     (slice) => slice.ad
@@ -114,6 +115,16 @@ const ViewDetails = () => {
       title: "Attached bathroom",
     },
   ];
+  const amenitiesData = [
+    { name: "inverter", label: "Inverter", Icon: BatteryCharging },
+    { name: "tv", label: "TV", Icon: Tv },
+    { name: "wifi", label: "Wifi", Icon: Wifi },
+    { name: "decor", label: "Decor", Icon: Heart },
+
+    { name: "visit", label: "Visit", Icon: CarTaxiFront },
+    { name: "cctv", label: "CCTV", Icon: Cctv },
+    { name: "ventillator", label: "Ventillator", Icon: AirVent },
+  ];
   const [viewMore, setViewMore] = useState(false);
   const location = useLocation();
   const { type, slug } = location.state || {};
@@ -123,13 +134,13 @@ const ViewDetails = () => {
   }
 
   useEffect(() => {
-    const adDetail = dispatch(get_ad_detail({ type, slug }));
+    dispatch(get_ad_detail({ type, slug }));
   }, []);
 
   return (
     <div className="w-full flex flex-col ">
       <Navbar />
-      <div className="flex h-[450px] overflow-y-scroll relative ">
+      <div className="flex h-[550px] pb-6 overflow-y-scroll relative py-12 ">
         <Swiper
           cssMode={true}
           mousewheel={true}
@@ -189,23 +200,27 @@ const ViewDetails = () => {
           <div className="py-5">
             <div className="border w-fit px-2 py-1 items-center gap-1 bg-[#FFF6EE] text-[#F49242] font-semibold rounded-md flex">
               <Heart className="size-3" />
-              <p>
-                Located 5 Km From Ragigudda Sri Prasanna Anjaneyaswamy Temple
-              </p>
+              <p>{adDetail?.nearby}</p>
             </div>
           </div>
-          <div className="flex  pb-6">
+          <div className="flex ">
             <h1 className="font-bold text-2xl">Amenities</h1>
           </div>
-          <div className="flex flex-wrap items-center justify-center ">
-            {IconsData.map(
-              (item, idx) =>
-                (viewMore ? true : idx < 6) && (
-                  <div className="w-1/3 flex py-4  gap-2">
-                    {item.img} {item.title}
+          <div className="flex  items-center justify-center ">
+            {amenitiesData.map((item, idx) => {
+              if (
+                adDetail?.amenities?.includes(item.name) &&
+                (viewMore || idx < 6)
+              ) {
+                return (
+                  <div key={item.name} className="w-1/3 flex py-4 gap-2">
+                    <item.Icon className="w-6 h-6 " />
+                    {item.label}
                   </div>
-                )
-            )}
+                );
+              }
+              return null;
+            })}
           </div>
           <div>
             {viewMore ? (

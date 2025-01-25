@@ -15,7 +15,20 @@ export const get_approved_ads = createAsyncThunk(
     }
   }
 );
-
+export const get_approved_ads_for_home = createAsyncThunk(
+  "customer/get_approved_ads_for_home",
+  async (_, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await api.get("/customer/home-ads/");
+      return fulfillWithValue(data);
+    } catch (error) {
+      const errorData = error.response?.data || {
+        message: "Something went wrong",
+      };
+      return rejectWithValue(errorData);
+    }
+  }
+);
 export const get_ad_detail = createAsyncThunk(
   "customer/get_ad_detail",
   async ({ type, slug }, { rejectWithValue, fulfillWithValue }) => {
@@ -43,6 +56,42 @@ export const fetch_Ad_by_category = createAsyncThunk(
       const { data } = await api.get(
         `/customer/ads/${catname}`,
 
+        { withCredentials: true }
+      );
+
+      return fulfillWithValue(data);
+    } catch (error) {
+      const errorData = error.response?.data || {
+        message: "Something went wrong",
+      };
+      return rejectWithValue(errorData);
+    }
+  }
+);
+export const upload_home_Ad = createAsyncThunk(
+  "customer/upload_home_Ad",
+  async (formData, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await api.post(`/ad/home`, formData, {
+        withCredentials: true,
+      });
+
+      return fulfillWithValue(data);
+    } catch (error) {
+      const errorData = error.response?.data || {
+        message: "Something went wrong",
+      };
+      return rejectWithValue(errorData);
+    }
+  }
+);
+export const delete_Ad = createAsyncThunk(
+  "customer/delete_Ad",
+  async ({ id }, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await api.delete(
+        `/agent/ad/${id}`,
+        { ad },
         { withCredentials: true }
       );
 
@@ -85,7 +134,7 @@ const adSlice = createSlice({
       .addCase(get_approved_ads.fulfilled, (state, { payload }) => {
         state.successMessage = payload?.message || "Fetched successfully";
         state.loader = false;
-        state.ApprovedAds = payload?.ApprovedAds || [];
+        state.ApprovedAds = payload?.data || [];
       })
 
       .addCase(get_ad_detail.pending, (state) => {
@@ -112,6 +161,19 @@ const adSlice = createSlice({
         state.loader = false;
       })
       .addCase(fetch_Ad_by_category.fulfilled, (state, { payload }) => {
+        state.successMessage = payload?.message || "Fetched successfully";
+        state.loader = false;
+        state.ApprovedAds = payload.data;
+      })
+      .addCase(get_approved_ads_for_home.pending, (state) => {
+        state.loader = true;
+        state.errorMessage = "";
+      })
+      .addCase(get_approved_ads_for_home.rejected, (state, { payload }) => {
+        state.errorMessage = payload?.message || "An error occurred";
+        state.loader = false;
+      })
+      .addCase(get_approved_ads_for_home.fulfilled, (state, { payload }) => {
         state.successMessage = payload?.message || "Fetched successfully";
         state.loader = false;
         state.ApprovedAds = payload.data;

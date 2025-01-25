@@ -1,11 +1,14 @@
 import React from "react";
 import logo from "/image/oyo-logo1.png";
 import { Activity, CircleUser, Globe, Phone } from "lucide-react";
-
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import user from "/image/user.webp";
 const Navbar = () => {
+  const { userInfo } = useSelector((slice) => slice.auth);
   return (
     <div className="w-full flex  ">
-      <div className="flex px-10 shadow-md justify-center items-center py-2 w-full  ">
+      <div className="flex px-10 shadow-md justify-center items-center py-4 w-full  ">
         <div className="content-center ">
           <img className=" w-20" src={logo} alt="oyo-icon" />
         </div>
@@ -40,9 +43,37 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-        <div className="flex items-center px-4  gap-2">
-          <CircleUser className="stroke-[1.5]" />
-          <p className="font-semibold text-[#585858]">Login / Signup</p>
+
+        <div className="flex items-center gap-2 font-bold">
+          <div className=" rounded-full border">
+            <img
+              src={userInfo ? userInfo?.avatar : user}
+              className="lg:size-9 hidden lg:flex size-6 object-container rounded-full overflow-hidden text-center"
+              alt="profile"
+            />
+          </div>
+          {!userInfo?.token ? (
+            <div className="text-md ">
+              <Link to="/login">
+                <span>Login</span>
+              </Link>{" "}
+              /{" "}
+              <Link to="/register">
+                <span>Signup</span>
+              </Link>
+            </div>
+          ) : (
+            <Link to="/login">
+              <span
+                className="text-xs lg:text-lg "
+                onClick={() =>
+                  dispatch(customer_logout()).then(() => navigate("/"))
+                }
+              >
+                Logout
+              </span>
+            </Link>
+          )}
         </div>
       </div>
     </div>

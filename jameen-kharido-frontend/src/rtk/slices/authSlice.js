@@ -123,7 +123,18 @@ export const agent_logout = createAsyncThunk(
     }
   }
 );
+export const check_session = createAsyncThunk(
+  "auth/check_session",
+  async (_, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await api.get("/auth/check");
 
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 export const authReducer = createSlice({
   name: "auth",
   initialState: {
@@ -161,7 +172,7 @@ export const authReducer = createSlice({
         state.loader = true;
       })
       .addCase(customer_login.rejected, (state, { payload }) => {
-        state.errorMessage = payload.message;
+        state.errorMessage = payload.error;
         state.loader = false;
       })
       .addCase(customer_login.fulfilled, (state, { payload }) => {
@@ -222,7 +233,7 @@ export const authReducer = createSlice({
         console.log(payload);
         state.successMessage = payload.message;
         state.loader = false;
-        state.userInfo = payload.isPresent;
+        state.userInfo = payload.data;
         redirect("/");
       })
       .addCase(agent_logout.fulfilled, (state, { payload }) => {
@@ -230,6 +241,19 @@ export const authReducer = createSlice({
         state.successMessage = payload.message;
         redirect("/");
         state.loader = false;
+      })
+      .addCase(check_session.pending, (state) => {
+        state.loader = true;
+      })
+      .addCase(check_session.rejected, (state, { payload }) => {
+        // state.errorMessage = payload.error;
+        state.loader = false;
+      })
+      .addCase(check_session.fulfilled, (state, { payload }) => {
+        state.successMessage = payload.message;
+        state.loader = false;
+        state.userInfo = payload.data;
+        redirect("/");
       });
   },
 });

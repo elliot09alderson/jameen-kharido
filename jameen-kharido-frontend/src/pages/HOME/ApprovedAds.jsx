@@ -2,7 +2,10 @@ import React, { useEffect } from "react";
 import empty from "/empty.png";
 import { HiLocationMarker } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
-import { get_approved_ads } from "../../rtk/slices/adSlice";
+import {
+  get_approved_ads,
+  get_approved_ads_for_home,
+} from "../../rtk/slices/adSlice";
 
 import shop from "/image/ads/shop.jpg";
 import flat from "/image/ads/flat.jpg";
@@ -13,14 +16,17 @@ import land from "/image/ads/land.jpg";
 import { Link, useNavigate } from "react-router-dom";
 
 const ApprovedAds = () => {
-  const disatch = useDispatch();
+  const dispatch = useDispatch();
   const { ApprovedAds, loader, successMessage, errorMesssage } = useSelector(
     (slice) => slice.ad
   );
+
   useEffect(() => {
-    disatch(get_approved_ads());
+    dispatch(get_approved_ads_for_home());
   }, []);
-  useEffect(() => {}, [ApprovedAds]);
+  useEffect(() => {
+    console.log(ApprovedAds);
+  }, [ApprovedAds]);
   const navigate = useNavigate();
 
   const handleNavigate = (type, slug) => {
@@ -30,11 +36,11 @@ const ApprovedAds = () => {
   };
   return (
     <div className="flex flex-row px-24 flex-wrap gap-12 items-center justify-center lg:py-24">
-      {ApprovedAds.length > 0 ? (
-        ApprovedAds.map((item, idx) => {
+      {ApprovedAds?.length > 0 ? (
+        ApprovedAds?.map((item, idx) => {
           return (
             <div
-              className="h-fit p-5 min-h-[250px] cursor-pointer shadow-md rounded-md bg-stone-100 flex items-center  flex-col"
+              className="p-5 min-h-[250px] cursor-pointer shadow-md rounded-md bg-stone-100 flex items-center  flex-col w-72  h-[400px]"
               key={idx + item?.title}
               onClick={() => handleNavigate(item.type, item.slug)}
             >
@@ -42,7 +48,7 @@ const ApprovedAds = () => {
                 <img
                   src={item?.thumbnail}
                   alt=""
-                  className="w-48 object-cover h-32"
+                  className="  object-cover lg:w-96 min-h-64 rounded-md"
                 />
               ) : (
                 <img
@@ -55,10 +61,10 @@ const ApprovedAds = () => {
                       ? flat
                       : land
                   }
-                  className="w-48 object-cover h-32"
+                  className="object-cover lg:w-96 min-h-64"
                 />
               )}
-              <div className="flex flex-col justify-center gap-1 pt-2">
+              <div className="flex flex-col justify-end gap-1 pt-2">
                 <b>₹ {item.price}</b>
                 <h1>{item.title}</h1>
                 <p className=" text-xs lg:text-sm  flex gap-1 items-center ">
