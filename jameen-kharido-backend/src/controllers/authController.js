@@ -20,9 +20,15 @@ const agentLoginSchema = z.object({
     .min(8, { message: "Password must be at least 8 characters long" }),
   email: z.string().email({ message: "Invalid email format" }),
 });
-
+export const checkAuth = async (req, res) => {
+  try {
+    const user = req.user;
+    res.status(200).json({ message: "user verified ", data: user });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 export const customerLogin = async (req, res) => {
-  // console.log(req.body);
   try {
     const { email, password } = req.body;
 
@@ -54,18 +60,15 @@ export const customerLogin = async (req, res) => {
 
     if (matched) {
       const expiryDuration = 24 * 60 * 60 * 1000; // 1 day in milliseconds
-      let oldtoken = await jwt.sign(
-        {
-          email: isPresent.email,
-          _id: isPresent._id,
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: "1d" } // Set token expiration
-      );
+      let oldtoken = await generateAccessToken({
+        email: isPresent.email,
+        id: isPresent._id,
+        role: isPresent.role || "customer",
+      });
 
       const token = await encryptToken(oldtoken, process.env.SECRET_KEY);
 
-      isPresent.token = oldtoken; // Assuming the Customer model has a `token` field
+      isPresent.token = oldtoken;
       isPresent.tokenExpiry = new Date(Date.now() + expiryDuration);
       await isPresent.save();
 
@@ -128,7 +131,7 @@ export const agentLogin = async (req, res) => {
     }).select("+password");
 
     if (!isPresent) {
-      return res.status(400).json({ error: "not present" });
+      return res.status(400).json({ error: "invalid email or password" });
     }
 
     const matched = await bcrypt.compare(
@@ -136,16 +139,11 @@ export const agentLogin = async (req, res) => {
       isPresent.password
     );
 
-    console.log("par ho gya");
     if (matched) {
-      // const refreshToken = await generateRefreshToken({
-      //   email: isPresent.email,
-      //   _id: isPresent._id,
-      // });
-
       const accessToken = await generateAccessToken({
         email: isPresent.email,
-        _id: isPresent._id,
+        id: isPresent._id,
+        role: isPresent.role,
       });
 
       const encryptedToken = await encryptToken(
@@ -154,6 +152,7 @@ export const agentLogin = async (req, res) => {
       );
 
       isPresent.token = accessToken;
+      isPresent.tokenExpiry = Date.now() + 7 * 24 * 60 * 60 * 1000;
 
       await isPresent.save();
 
@@ -165,7 +164,7 @@ export const agentLogin = async (req, res) => {
         .json({
           message: "logged in successfully",
           encryptedToken,
-          agent,
+          data: agent,
         });
     }
   } catch (error) {

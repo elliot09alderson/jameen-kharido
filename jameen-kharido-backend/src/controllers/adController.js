@@ -18,8 +18,8 @@ const homePropertySchema = z.object({
   bathrooms: z.number().min(0, "Bathrooms must be a positive number"),
   parking: z.boolean().default(false),
   garden: z.boolean().default(false),
-  amenities: z.string().default(""),
-  nearby: z.array(z.string()).default([]),
+  amenities: z.array(z.string()).default([]),
+  nearby: z.string().default(""),
 });
 
 export const postHomeAd = async (req, res) => {
@@ -35,7 +35,6 @@ export const postHomeAd = async (req, res) => {
     }
     return Boolean(value); // Convert numbers (e.g., 1 or 0) to true/false
   };
-
   const {
     title,
     description,
@@ -70,6 +69,7 @@ export const postHomeAd = async (req, res) => {
   });
 
   const files = req.files;
+  console.log("files", files);
 
   const cropParams = {
     gravity: "auto",
@@ -80,7 +80,6 @@ export const postHomeAd = async (req, res) => {
 
   try {
     const uploadResults = [];
-    console.log(files);
 
     if (files) {
       for (const file of files) {
@@ -114,13 +113,11 @@ export const postHomeAd = async (req, res) => {
       });
     }
 
-    const amenitiesArray = parsed.data.amenities.split(" ");
-
     const slug = generateSlug(parsed.data.title);
 
     const homeAd = await Home.create({
       ...parsed.data,
-      amenities: amenitiesArray,
+
       images: uploadResults,
       slug,
     });

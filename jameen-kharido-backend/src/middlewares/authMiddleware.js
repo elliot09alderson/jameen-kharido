@@ -67,23 +67,11 @@ class AuthMiddleware {
       const decoded = jwt.verify(decToken, process.env.ACCESS_TOKEN_SECRET);
 
       if (!decoded) {
-        jwt.verify(
-          agent.token,
-          process.env.REFRESH_TOKEN_SECRET,
-          async (err, decoded) => {
-            if (err)
-              return res
-                .status(403)
-                .json({ message: "Invalid or expired refresh token" });
-          }
-        );
+        return res
+          .status(403)
+          .json({ message: "Invalid or expired refresh token" });
       }
 
-      const findagent = await Agent.findOne({
-        _id: decoded.id,
-      }).select("-password");
-
-      console.log(decToken, ">>>>>", findagent.token);
       const agent = await Agent.findOne({
         _id: decoded.id,
         token: decToken,
@@ -93,21 +81,76 @@ class AuthMiddleware {
         return res.status(401).json({ error: "Unauthorized: Invalid token" });
       }
 
-      // Check if token is expired
       if (new Date() > agent.tokenExpiry) {
         return res.status(401).json({ error: "Unauthorized: Token expired" });
       }
 
-      // Attach customer info to the request
       req.agent = agent;
       console.log("passed");
       next();
     } catch (error) {
-      console.error("Error in authMiddleware:", error);
+      console.error("Error in authMiddleware:", error.message);
       return res.status(401).json({ error: "Unauthorized" });
     }
   };
+  commonMiddleware = async (req, res, next) => {
+    try {
+      const token =
+        req.cookies.agentToken ||
+        req.cookies.adminToken ||
+        req.cookies.customerToken ||
+        req.headers.Authorization;
+      if (!token) {
+        return res
+          .status(401)
+          .json({ error: "Unauthorized: No token provided" });
+      }
 
+      // Decode the token
+      const decToken = decryptToken(token, process.env.SECRET_KEY);
+
+      const decoded = jwt.verify(decToken, process.env.ACCESS_TOKEN_SECRET);
+
+      if (!decoded) {
+        return res
+          .status(403)
+          .json({ message: "Invalid or expired refresh token" });
+      }
+      console.log(decoded.id);
+      let user;
+      if (decoded.role == "admin") {
+        user = await Admin.findOne({
+          _id: decoded.id,
+          token: decToken,
+        }).select("-password");
+      } else if (decoded.role == "agent") {
+        user = await Agent.findOne({
+          _id: decoded.id,
+          token: decToken,
+        }).select("-password");
+      } else {
+        user = await Customer.findOne({
+          _id: decoded.id,
+          token: decToken,
+        }).select("-password");
+      }
+
+      if (!user) {
+        return res.status(401).json({ error: "Unauthorized: Invalid token" });
+      }
+
+      if (new Date() > user.tokenExpiry) {
+        return res.status(401).json({ error: "Unauthorized: Token expired" });
+      }
+
+      req.user = user;
+      console.log("passed");
+      next();
+    } catch (error) {
+      console.error("Error in authMiddleware:", error.message);
+      return res.status(401).json({ error: error.message });
+    }
+  };
   adminMiddleware = async (req, res, next) => {
     try {
       const token = req.cookies.adminToken || req.headers.Authorization;

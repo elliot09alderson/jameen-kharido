@@ -59,6 +59,10 @@ const adminSchema = new mongoose.Schema(
       ],
       default: [],
     },
+    role: {
+      default: "admin",
+      type: String,
+    },
     requestedAds: {
       type: [
         {

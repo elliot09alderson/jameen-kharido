@@ -5,6 +5,7 @@ import {
   fetchAdByCategory,
   fetchAdDetail,
   fetchApprovedAds,
+  fetchApprovedHomeAds,
   getCustomerDetails,
 } from "../controllers/customerController.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
@@ -14,6 +15,7 @@ import express from "express";
 
 export const customerRouter = express.Router();
 
+customerRouter.get("/home-ads", fetchApprovedHomeAds);
 customerRouter.get("/ads", fetchApprovedAds);
 
 customerRouter.get("/ad/detail", fetchAdDetail);

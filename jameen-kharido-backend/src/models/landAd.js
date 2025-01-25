@@ -42,8 +42,8 @@ const landAdSchema = new mongoose.Schema(
       default: false,
     },
     nearby: {
-      type: [String], // Array of nearby landmarks or facilities
-      default: [],
+      type: String,
+      default: "",
     },
     images: {
       type: [String],

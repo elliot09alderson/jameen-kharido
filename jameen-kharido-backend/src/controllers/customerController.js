@@ -63,8 +63,7 @@ export async function getCustomerDetails(req, res) {
     return res.status(401).json({ error: "customer not get" });
   }
 }
-
-export async function fetchApprovedAds(req, res) {
+export async function fetchApprovedHomeAds(req, res) {
   try {
     const shuffleArray = (array) => array.sort(() => Math.random() - 0.5);
 
@@ -146,7 +145,43 @@ export async function fetchApprovedAds(req, res) {
 
     return res.status(200).json({
       success: true,
-      ApprovedAds: shuffledAds,
+      data: shuffledAds,
+      message: "all ads fetched",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(401).json({ error: "customer not get" });
+  }
+}
+
+export async function fetchApprovedAds(req, res) {
+  try {
+    const shuffleArray = (array) => array.sort(() => Math.random() - 0.5);
+
+    const allAds = await Home.aggregate([
+      {
+        $unionWith: {
+          coll: "flats",
+        },
+      },
+      {
+        $unionWith: {
+          coll: "shops",
+        },
+      },
+      {
+        $unionWith: {
+          coll: "lands",
+        },
+      },
+    ]);
+
+    // Shuffle the combined array of documents
+    const shuffledAds = shuffleArray(allAds);
+
+    return res.status(200).json({
+      success: true,
+      data: shuffledAds,
       message: "all ads fetched",
     });
   } catch (error) {

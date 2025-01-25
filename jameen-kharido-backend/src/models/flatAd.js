@@ -52,8 +52,7 @@ const flatAdSchema = new mongoose.Schema(
       default: false,
     },
     furnished: {
-      enum: ["unfurnished", "furnished", "semifurnished"], // true for furnished, false for unfurnished
-      //   required: true,
+      enum: ["unfurnished", "furnished", "semifurnished"], // true for
     },
     amenities: {
       type: [String], // Array of amenities like elevator, water, parking, etc.
@@ -69,8 +68,8 @@ const flatAdSchema = new mongoose.Schema(
       //   required: true,
     },
     nearby: {
-      type: [String], // Array of nearby landmarks or facilities
-      default: [],
+      type: String, // Array of nearby landmarks or facilities
+      default: "",
     },
     images: {
       type: [String], // Array of image URLs

@@ -46,8 +46,8 @@ const shopAdSchema = new mongoose.Schema(
       default: false,
     },
     nearby: {
-      type: [String], // Array of nearby landmarks or facilities
-      default: [],
+      type: String, // Array of nearby landmarks or facilities
+      default: "",
     },
     images: {
       type: [String],

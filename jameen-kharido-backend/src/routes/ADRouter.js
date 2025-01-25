@@ -42,7 +42,7 @@ AdRouter.get("/shops", getAllShopAds);
 AdRouter.post(
   "/home",
   authMiddleware.agentMiddleware,
-  upload.array("homeAdImages", 5),
+  upload.array("images", 5),
   postHomeAd
 );
 

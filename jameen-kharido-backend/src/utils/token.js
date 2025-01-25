@@ -17,10 +17,10 @@ export const verifyToken = (req, res, next) => {
 // Generate Access Token
 export const generateAccessToken = (user) => {
   return jwt.sign(
-    { id: user._id, email: user.email },
+    { id: user.id, email: user.email, role: user.role },
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: "1m", // Short-lived access token
+      expiresIn: "7d", // Short-lived access token
     }
   );
 };

@@ -11,6 +11,10 @@ const agentSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    role: {
+      default: "agent",
+      type: String,
+    },
     token: {
       type: String,
       default: null,

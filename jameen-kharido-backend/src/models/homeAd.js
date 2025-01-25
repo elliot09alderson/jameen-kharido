@@ -52,9 +52,13 @@ const homeAdSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    furnished: {
+      type: String,
+      enum: ["unfurnished", "furnished", "semifurnished"], // true for
+    },
     nearby: {
-      type: [String], // Array of nearby landmarks or facilities
-      default: [],
+      type: String, // Array of nearby landmarks or facilities
+      default: "",
     },
     images: {
       type: [String],
