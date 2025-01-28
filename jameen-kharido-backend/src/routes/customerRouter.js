@@ -21,6 +21,9 @@ customerRouter.get("/ads", fetchApprovedAds);
 customerRouter.get("/ad/detail", fetchAdDetail);
 customerRouter.get("/ads/:catname", fetchAdByCategory);
 
+
+
+
 customerRouter.get(
   "/me",
   authMiddleware.customerMiddleware,

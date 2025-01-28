@@ -24,6 +24,8 @@ import PivateAgentRouter from "./pages/ProtectedAuth/PivateAgentRouter.jsx";
 import { useEffect } from "react";
 import { check_session, messageClear } from "./rtk/slices/authSlice.js";
 
+import MyProfile from "./pages/ADS/MyProfile.jsx";
+
 const App = () => {
   const dispatch = useDispatch();
   const { userInfo, successMessage, errorMessage, loader } = useSelector(
@@ -31,6 +33,7 @@ const App = () => {
   );
   useEffect(() => {
     dispatch(check_session());
+
     console.log(userInfo);
   }, []);
 
@@ -59,6 +62,26 @@ const App = () => {
           ],
         },
 
+        
+  {
+          path: "myProfile",
+
+          children: [
+            {
+              element: <PivateAgentRouter />,
+              children: [
+                {
+                  index: true,
+                  element: <MyProfile />,
+                },
+                
+              ],
+            },
+          ],
+        },
+         
+        
+
         {
           path: "post",
 
@@ -86,6 +109,7 @@ const App = () => {
             },
           ],
         },
+         
       ],
     },
 

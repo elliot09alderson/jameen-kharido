@@ -5,7 +5,7 @@ const PublicAgentRouter = () => {
   const { userInfo } = useSelector((state) => state.auth);
 
   if (userInfo && userInfo?.role == "agent") {
-    return <Navigate to="/agent/post" replace />;
+    return <Navigate to="/agent/myProfile" replace />;
   }
 
   return <Outlet />;

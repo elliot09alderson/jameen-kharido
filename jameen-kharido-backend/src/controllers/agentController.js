@@ -130,6 +130,10 @@ export async function getAgentDetails(req, res) {
       .populate("connections", "name email phoneNumber")
       .populate("clients", "name email phoneNumber")
       .populate("documents")
+      .populate("myFlatAds") // Populates myFlatAds
+      .populate("myHomeAds") // Populates myHomeAds
+      .populate("myShopAds") // Populates myShopAds
+      .populate("myLandAds") // Populates myLandAds
       .select("-password");
 
     // If agent not found, return a 404 error
@@ -140,11 +144,13 @@ export async function getAgentDetails(req, res) {
       });
     }
 
+    console.log(agent)
+
     // Return the agent details
     return res.status(200).json({
       success: true,
       message: "Agent details fetched successfully",
-      agent,
+      data: agent,
     });
   } catch (error) {
     console.error(error.message);
@@ -164,10 +170,10 @@ export async function editAgentDetails(req, res) {
     // Handle the optional image file
     let image = req.file
       ? {
-          mimetype: req.file.mimetype,
-          size: req.file.size,
-          filepath: req.file.path, // Assuming you're using a library like `multer`
-        }
+        mimetype: req.file.mimetype,
+        size: req.file.size,
+        filepath: req.file.path, // Assuming you're using a library like `multer`
+      }
       : undefined;
 
     // Parse and validate the input data using optionalCustomerSchema
@@ -324,35 +330,35 @@ export async function uploadAgentDocument(req, res) {
       agentId: parsed.data.agentId,
       adhaar: parsed.data.adhaarNumber
         ? {
-            number: parsed.data.adhaarNumber,
-            adhaarImage: uploadResults.filter(
-              (field) => field.field == "adhaarImage"
-            )[0].url,
-          }
+          number: parsed.data.adhaarNumber,
+          adhaarImage: uploadResults.filter(
+            (field) => field.field == "adhaarImage"
+          )[0].url,
+        }
         : undefined,
       pan: parsed.data.panNumber
         ? {
-            number: parsed.data.panNumber,
-            panImage: uploadResults.filter(
-              (field) => field.field == "panImage"
-            )[0].url,
-          }
+          number: parsed.data.panNumber,
+          panImage: uploadResults.filter(
+            (field) => field.field == "panImage"
+          )[0].url,
+        }
         : undefined,
       licence: parsed.data.licenceNumber
         ? {
-            number: parsed.data.licenceNumber,
-            licenceImage: uploadResults.filter(
-              (field) => field.field == "licenceImage"
-            )[0].url,
-          }
+          number: parsed.data.licenceNumber,
+          licenceImage: uploadResults.filter(
+            (field) => field.field == "licenceImage"
+          )[0].url,
+        }
         : undefined,
       gst: parsed.data.gstNumber
         ? {
-            number: parsed.data.gstNumber,
-            gstImage: uploadResults.filter(
-              (field) => field.field == "gstImage"
-            )[0].url,
-          }
+          number: parsed.data.gstNumber,
+          gstImage: uploadResults.filter(
+            (field) => field.field == "gstImage"
+          )[0].url,
+        }
         : undefined,
     });
 
@@ -373,3 +379,49 @@ export async function uploadAgentDocument(req, res) {
     });
   }
 }
+
+export async function fetchAgentAds(req, res) {
+  const agentId = req.agent._id;
+  // console.log(agentId)
+
+  try {
+    // Validate if the agentId is provided
+    if (!agentId) {
+      return res.status(400).json({
+        success: false,
+        message: "Agent ID is required",
+      });
+    }
+
+    // Fetch the agent details by ID
+    const agent = await Agent.findById(agentId)
+      .populate("myFlatAds")
+      .populate("myHomeAds")
+      .populate("myShopAds")
+      .populate("myLandAds");
+    console.log(agent)
+    // If agent not found, return a 404 error
+    if (!agent) {
+      return res.status(404).json({
+        success: false,
+        message: "Agent not found",
+      });
+    }
+
+    // Return the agent details
+    return res.status(200).json({
+      success: true,
+      message: "Agent details fetched successfully",
+      agent,
+    });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+}
+
+
+

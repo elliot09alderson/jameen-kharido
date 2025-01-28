@@ -6,7 +6,7 @@ const QuickLinks = () => {
     <div className="h-20 bg-stone-700 text-white  font-semibold text-sm justify-end px-24 gap-12 items-center flex">
       {[
         { title: "Home", path: "/" },
-        { title: "About", path: "/about" },
+        { title: "AgentADs", path: "/agent/myProfile" },
         { title: "Ads", path: "/ads" },
         { title: "post", path: "/agent/login" },
         { title: "Contact", path: "/contact" },

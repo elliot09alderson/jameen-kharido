@@ -6,6 +6,9 @@ import { Land } from "../models/landAd.js";
 import { Shop } from "../models/shopAd.js";
 import { generateSlug } from "../utils/function.js";
 import fs from "fs";
+import { Agent } from "../models/agent.js";
+
+
 const homePropertySchema = z.object({
   agentId: z.string().nonempty("Agent ID is required"), // Assuming
   title: z.string().nonempty("Title is required"),
@@ -35,6 +38,7 @@ export const postHomeAd = async (req, res) => {
     }
     return Boolean(value); // Convert numbers (e.g., 1 or 0) to true/false
   };
+
   const {
     title,
     description,
@@ -49,8 +53,6 @@ export const postHomeAd = async (req, res) => {
     amenities,
     nearby,
   } = req.body;
-
-  // console.log("this is req.cody",req.body)
 
   const parsed = homePropertySchema.safeParse({
     agentId: id,
@@ -117,18 +119,26 @@ export const postHomeAd = async (req, res) => {
 
     const homeAd = await Home.create({
       ...parsed.data,
-
       images: uploadResults,
       slug,
     });
 
-    if (homeAd) {
-      return res.status(201).json({
-        success: true,
-        message: "Agent home Ad added successfully",
-        homeAd,
-      });
-    }
+    await Agent.findByIdAndUpdate(
+      id,
+      {
+        $push: {
+          myHomeAds: homeAd._id, // Replace `newAdId` with the ID you want to add
+        },
+      },
+      { new: true } // Return the updated document
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: "Agent home ad added successfully",
+      data: homeAd,
+    });
+
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({
@@ -151,13 +161,13 @@ const flatPropertySchema = z.object({
   floor: z.number().optional(),
   totalFloors: z.number().optional(),
   furnished: z.enum(["unfurnished", "furnished", "semifurnished"]).optional(),
-  amenities: z.string().optional().default(""),
+  amenities: z.array(z.string()).optional().default(""),
   age: z.number().positive("Age must be a positive number").optional(),
   maintenance: z
     .number()
     .positive("Maintenance must be a positive number")
     .optional(),
-  nearby: z.array(z.string()).optional().default([]),
+  nearby: z.string().optional().default([]),
   images: z.array(z.string().url("Invalid URL")).optional().default([]),
 });
 
@@ -192,6 +202,23 @@ export const postFlatAd = async (req, res) => {
     maintenance,
     nearby,
   } = req.body;
+
+  console.log("this is fsdff", title,
+    description,
+    location,
+    pincode,
+    price,
+    area,
+    bedrooms,
+    bathrooms,
+    floor,
+    totalFloors,
+    furnished,
+    amenities,
+    age,
+    maintenance,
+    nearby,)
+
 
   const parsed = flatPropertySchema.safeParse({
     agentId: id,
@@ -255,23 +282,35 @@ export const postFlatAd = async (req, res) => {
         })),
       });
     }
-    // console.log("parsed success");
-    const amenitiesArray = parsed.data.amenities.split(" ");
+
+
+
+
     const slug = generateSlug(parsed.data.title);
+
+
     const flatAd = await Flat.create({
       ...parsed.data,
       slug,
-      amenities: amenitiesArray,
       images: uploadResults,
     });
 
-    // console.log(homeAd)
 
+
+    await Agent.findByIdAndUpdate(
+      id,
+      {
+        $push: {
+          myFlatAds: flatAd._id, // Replace `newAdId` with the ID you want to add
+        },
+      },
+      { new: true } // Return the updated document
+    );
     if (flatAd) {
       return res.status(201).json({
         success: true,
-        message: "Agent flatsAd add successfully",
-        flatAd,
+        message: "Agent flats Ad add successfully",
+        data: flatAd,
       });
     }
   } catch (error) {
@@ -378,7 +417,7 @@ export const postLandAd = async (req, res) => {
       }
     }
 
-    console.log(uploadResults);
+
 
     if (!parsed.success) {
       return res.status(400).json({
@@ -389,20 +428,28 @@ export const postLandAd = async (req, res) => {
         })),
       });
     }
-    // console.log("parsed success");
+
 
     const landAd = await Land.create({
       ...parsed.data,
       images: uploadResults,
     });
-
+    await Agent.findByIdAndUpdate(
+      id,
+      {
+        $push: {
+          myLandAds: landAd._id, // Replace `newAdId` with the ID you want to add
+        },
+      },
+      { new: true } // Return the updated document
+    );
     // console.log(homeAd)
 
     if (landAd) {
       return res.status(201).json({
         success: true,
         message: "Agent landsAd add successfully",
-        landAd,
+        data: landAd,
       });
     }
   } catch (error) {
@@ -526,14 +573,22 @@ export const postShopAd = async (req, res) => {
       ...parsed.data,
       images: uploadResults,
     });
-
+    await Agent.findByIdAndUpdate(
+      id,
+      {
+        $push: {
+          myShopAds: shopAd._id, // Replace `newAdId` with the ID you want to add
+        },
+      },
+      { new: true } // Return the updated document
+    );
     // console.log(homeAd)
 
     if (shopAd) {
       return res.status(201).json({
         success: true,
         message: "Agent shopsAd add successfully",
-        shopAd,
+        data: shopAd,
       });
     }
   } catch (error) {

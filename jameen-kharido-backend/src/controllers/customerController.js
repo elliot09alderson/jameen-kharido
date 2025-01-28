@@ -242,8 +242,12 @@ export async function fetchAdByCategory(req, res) {
     return res.status(400).json({ error: "Invalid type provided" });
   }
 
+
   try {
-    const ads = await Model.find();
+    const ads = await Model.find({
+      isApproved:
+        false
+    });
 
     if (!ads) {
       return res.status(404).json({ error: "Ad not found" });
@@ -349,9 +353,9 @@ export async function editCustomerDetails(req, res) {
 
     let image = req.files?.image
       ? {
-          mimetype: req.files.image.mimetype,
-          size: req.files.image.size,
-        }
+        mimetype: req.files.image.mimetype,
+        size: req.files.image.size,
+      }
       : undefined;
 
     // Validate input data with zod

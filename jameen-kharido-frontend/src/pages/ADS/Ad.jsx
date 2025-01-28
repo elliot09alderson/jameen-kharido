@@ -27,6 +27,7 @@ const Ad = () => {
   useEffect(() => {
     dispatch(fetch_Ad_by_category({ catname }));
   }, [catname]);
+  
   useEffect(() => {
     console.log(ApprovedAds);
   }, [ApprovedAds]);

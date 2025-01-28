@@ -102,8 +102,8 @@ export const agent_login = createAsyncThunk(
   "auth/agent_login",
   async (info, { rejectWithValue, fulfillWithValue }) => {
     try {
-      const { data } = await api.post("auth/agent/login", info);
-      localStorage.setItem("agentToken", data.token);
+      const { data} = await api.post("auth/agent/login", info);
+      localStorage.setItem("agentToken", data?.token);
       return fulfillWithValue(data);
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -135,6 +135,7 @@ export const check_session = createAsyncThunk(
     }
   }
 );
+
 export const authReducer = createSlice({
   name: "auth",
   initialState: {
@@ -230,7 +231,7 @@ export const authReducer = createSlice({
         state.loader = false;
       })
       .addCase(agent_login.fulfilled, (state, { payload }) => {
-        console.log(payload);
+    
         state.successMessage = payload.message;
         state.loader = false;
         state.userInfo = payload.data;

@@ -65,7 +65,7 @@ const LoginAgent = () => {
             onSubmit={(values) => {
               // console.log("Form Data:", values);
               const res = dispatch(agent_login(values)).then(() =>
-                navigate("/agent/post")
+                navigate("/agent/myAds")
               );
 
               console.log("rerer", res.error);

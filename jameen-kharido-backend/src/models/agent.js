@@ -33,17 +33,31 @@ const agentSchema = new mongoose.Schema(
       type: String,
       //   required: true,
     },
-    myAds: {
-      type: [
-        {
-          type: String,
-          //   type: mongoose.Schema.Types.ObjectId,
-          //   ref: "Ad",
-          //   required: true,
-        },
-      ],
-      default: [],
-    },
+    myFlatAds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Flat", // Reference the Flat model
+      },
+    ],
+    myHomeAds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Home", // Reference the Home model
+      },
+    ],
+    myShopAds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Shop", // Reference the Shop model
+      },
+    ],
+    myLandAds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Land", // Reference the Land model
+      },
+    ],
+
     avatar: {
       type: String, // URL to the avatar image
       default: null,

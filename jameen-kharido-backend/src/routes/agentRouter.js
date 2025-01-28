@@ -1,6 +1,7 @@
 import {
   createAgent,
   editAgentDetails,
+  fetchAgentAds,
   getAgentDetails,
   uploadAgentDocument,
 } from "../controllers/agentController.js";
@@ -16,6 +17,8 @@ export const agentRouter = express.Router();
  *
  */
 agentRouter.get("/me", authMiddleware.agentMiddleware, getAgentDetails);
+
+
 agentRouter.post(
   "/uploadDocument",
   authMiddleware.agentMiddleware,
@@ -28,7 +31,7 @@ agentRouter.post(
   uploadAgentDocument
 );
 
-/**
+/** 
  *
  * CREATE
  *
@@ -48,3 +51,7 @@ agentRouter.put("/", authMiddleware.agentMiddleware, editAgentDetails);
  *
  */
 // agentRouter.delete("/homes/:id", deactivateagent);
+
+agentRouter.get("/myads", authMiddleware.agentMiddleware, fetchAgentAds);
+
+

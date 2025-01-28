@@ -168,7 +168,7 @@ const Footer = () => {
       <div className="flex lg:flex-row flex-col lg:justify-between gap-8  border-t px-16 lg:px-20 text-sm   text-white  py-12">
         {data.map((item, idx) => {
           return (
-            <div className="flex flex-col font-bold gap-3">
+            <div key={idx} className="flex flex-col font-bold gap-3">
               <div className="">{item.heading}</div>
               {item.options.map((obj, idx) => (
                 <li className="list-none cursor-pointer hover:underline">

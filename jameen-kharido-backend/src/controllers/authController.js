@@ -111,10 +111,13 @@ export const agentLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+
     const parsed = agentLoginSchema.safeParse({
       email,
       password,
     });
+
+    console.log(email,password)
 
     if (!parsed.success) {
       return res.status(400).json({
@@ -134,11 +137,18 @@ export const agentLogin = async (req, res) => {
       return res.status(400).json({ error: "invalid email or password" });
     }
 
+
+
     const matched = await bcrypt.compare(
       parsed.data.password,
       isPresent.password
     );
 
+     if (!matched) {
+      return res.status(400).json({ error: "invalid email or password" });
+    }
+
+    
     if (matched) {
       const accessToken = await generateAccessToken({
         email: isPresent.email,

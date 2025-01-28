@@ -101,6 +101,8 @@ const PostHome = () => {
 
     nearby: Yup.array().of(Yup.string()),
   });
+
+  
   const [previewImages, setPreviewImages] = useState([]);
   const handleSubmit = (values) => {
     const formData = new FormData();

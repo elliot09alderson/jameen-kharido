@@ -33,6 +33,13 @@ AdRouter.get("/homes", getAllHomeAds);
 AdRouter.get("/flats", getAllFlatAds);
 AdRouter.get("/lands", getAllLandAds);
 AdRouter.get("/shops", getAllShopAds);
+
+
+// find by agent...
+
+
+
+
 // /**
 //  *
 //  * CREATE
@@ -112,18 +119,18 @@ AdRouter.delete(
 );
 
 AdRouter.delete(
-  "/flats/:homeAdId",
+  "/flats/:flatAdId",
   authMiddleware.agentMiddleware,
   deleteFlatAd
 );
 
 AdRouter.delete(
-  "/lands/:homeAdId",
+  "/lands/:landAdId",
   authMiddleware.agentMiddleware,
   deleteLandAd
 );
 AdRouter.delete(
-  "/shops/:homeAdId",
+  "/shops/:shopAdId",
   authMiddleware.agentMiddleware,
   deleteShopAd
 );
