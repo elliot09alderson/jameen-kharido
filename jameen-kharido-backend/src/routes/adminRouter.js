@@ -41,9 +41,15 @@ adminRouter.put(
 /**
  *
  * DELETE
- *
- */
+*
+*/
 adminRouter.delete("/", authMiddleware.adminMiddleware, deleteAdmin);
+
+adminRouter.get(
+  "/agents/verified",
+  authMiddleware.adminMiddleware,
+  getVerifiedAgents
+);
 
 adminRouter.get("/agents", authMiddleware.adminMiddleware, getAllAgents);
 adminRouter.get("/agent/:id", authMiddleware.adminMiddleware, getAgent);
@@ -58,12 +64,10 @@ adminRouter.get(
   getAllBlockedAgents
 );
 
-adminRouter.get(
-  "/agents/verified",
-  authMiddleware.adminMiddleware,
-  getVerifiedAgents
-);
 
 
 
-adminRouter.get("/ad/pending/hello", authMiddleware.adminMiddleware, getRequestedAds);
+
+
+
+adminRouter.get("/ad/pending", authMiddleware.adminMiddleware, getRequestedAds);

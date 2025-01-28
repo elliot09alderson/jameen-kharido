@@ -334,7 +334,7 @@ const landPropertySchema = z.object({
       "Zone Type must be 'Residential', 'Commercial', or 'Agricultural'"
     ), // Restricted string values
   roadAccess: z.boolean().default(false), // Boolean with default `false`
-  nearby: z.array(z.string()).optional().default([]), // Array of strings (default: empty array)
+  nearby: z.string().optional().default([]), // Array of strings (default: empty array)
   images: z
     .array(z.string().url("Invalid URL for image"))
     .optional()
@@ -429,11 +429,16 @@ export const postLandAd = async (req, res) => {
       });
     }
 
+    const slug = generateSlug(parsed.data.title);
+
 
     const landAd = await Land.create({
       ...parsed.data,
+      slug,
       images: uploadResults,
     });
+
+
     await Agent.findByIdAndUpdate(
       id,
       {
@@ -462,39 +467,25 @@ export const postLandAd = async (req, res) => {
 };
 
 const shopPropertySchema = z.object({
-  agentId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId"), // Validates a MongoDB ObjectId
+  agentId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId"), // Validates MongoDB ObjectId
   title: z.string().min(1, "Title is required"), // Non-empty string
   description: z.string().min(1, "Description is required"), // Non-empty string
   location: z.string().min(1, "Location is required"), // Non-empty string
   pincode: z.number().int("Pincode must be an integer").optional(), // Optional integer
   price: z.number().positive("Price must be a positive number"), // Positive number
   area: z.number().positive("Area must be a positive number"), // Positive number
-  floor: z
-    .number()
-    .int("Floor must be an integer")
-    .positive("Floor must be a positive number"), // Required positive integer
-  furnished: z.boolean().default(false), // Boolean with default `false`
+  floor: z.number().int("Floor must be an integer").positive("Floor must be a positive number").optional(), // Optional positive integer
+  furnished: z.enum(["Furnished", "Semi-Furnished", "Unfurnished"], "Invalid Furnished status"), // Enum validation for furnished status
   parking: z.boolean().default(false), // Boolean with default `false`
-  nearby: z.array(z.string()).optional().default([]), // Array of strings (default: empty array)
-  images: z
-    .array(z.string().url("Invalid URL for image"))
-    .optional()
-    .default([]), // Array of valid image URLs (default: empty array)
+  nearby: z.string().optional().default([]), // Optional field with a default empty array
+  images: z.array(z.string().url("Invalid URL for image")).optional().default([]), // Array of valid image URLs
 });
-
 export const postShopAd = async (req, res) => {
   const { id } = req.agent;
 
-  const parseIfNumber = (value) => {
-    return isNaN(value) ? value : parseInt(value, 10);
-  };
-
-  const parseIfBoolean = (value) => {
-    if (typeof value === "string") {
-      return value.toLowerCase() === "true"; // Convert "true" to true and others to false
-    }
-    return Boolean(value); // Convert numbers (e.g., 1 or 0) to true/false
-  };
+  // Function to parse numbers and booleans
+  const parseIfNumber = (value) => (isNaN(value) ? value : parseInt(value, 10));
+  const parseIfBoolean = (value) => (typeof value === "string" ? value.toLowerCase() === "true" : Boolean(value));
 
   const {
     title,
@@ -509,6 +500,9 @@ export const postShopAd = async (req, res) => {
     nearby,
   } = req.body;
 
+  console.log(req.body);
+
+  // Validate the incoming data using the Zod schema
   const parsed = shopPropertySchema.safeParse({
     agentId: id,
     title,
@@ -518,12 +512,25 @@ export const postShopAd = async (req, res) => {
     price: parseIfNumber(price),
     area: parseIfNumber(area),
     floor: parseIfNumber(floor),
-    furnished: parseIfBoolean(furnished),
+    furnished,
     parking: parseIfBoolean(parking),
     nearby,
   });
 
+  // Handle validation errors
+  if (!parsed.success) {
+    return res.status(400).json({
+      success: false,
+      error: parsed.error.errors.map((err) => ({
+        path: err.path.join('.'), // Flatten the path array
+        message: err.message,
+      })),
+    });
+  }
+
+  // Process file uploads (if any)
   const files = req.files;
+  const uploadResults = [];
 
   const cropParams = {
     gravity: "auto",
@@ -532,69 +539,64 @@ export const postShopAd = async (req, res) => {
     crop: "crop",
   };
 
-  try {
-    const uploadResults = [];
-    console.log(files);
+  if (files && files.length > 0) {
+    for (const file of files) {
+      try {
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: "agents",
+          resource_type: "raw",
+          transformation: cropParams,
+        });
 
-    if (files) {
-      for (const file of files) {
-        try {
-          const result = await cloudinary.uploader.upload(file.path, {
-            folder: "agents",
-            resource_type: "raw",
-            transformation: cropParams,
-          });
+        uploadResults.push(result.secure_url);
 
-          uploadResults.push(result.secure_url);
-
-          fs.unlink(file.path, (err) => {
-            if (err) {
-              console.error("Error deleting the file:", err);
-            }
-          });
-        } catch (error) {
-          console.error("Error uploading file to Cloudinary:", error);
-        }
+        // Remove the file after upload
+        fs.unlink(file.path, (err) => {
+          if (err) {
+            console.error("Error deleting the file:", err);
+          }
+        });
+      } catch (uploadError) {
+        console.error("Error uploading file to Cloudinary:", uploadError);
       }
     }
+  }
 
-    if (!parsed.success) {
-      return res.status(400).json({
-        success: false,
-        error: parsed.error.errors.map((err) => ({
-          path: err.path,
-          message: err.message,
-        })),
-      });
-    }
-    // console.log("parsed success");
+  const slug = generateSlug(parsed.data.title);
 
+  try {
+    // Create the shop ad in the database
     const shopAd = await Shop.create({
       ...parsed.data,
+      slug,
       images: uploadResults,
     });
+
+    // Update the agent with the new shop ad
     await Agent.findByIdAndUpdate(
       id,
       {
-        $push: {
-          myShopAds: shopAd._id, // Replace `newAdId` with the ID you want to add
-        },
+        $push: { myShopAds: shopAd._id }, // Add the new ad to the agent's ads list
       },
-      { new: true } // Return the updated document
+      { new: true } // Return the updated agent document
     );
-    // console.log(homeAd)
 
-    if (shopAd) {
-      return res.status(201).json({
-        success: true,
-        message: "Agent shopsAd add successfully",
-        data: shopAd,
-      });
-    }
+    // Send the success response
+    return res.status(201).json({
+      success: true,
+      message: "Agent shop ad added successfully",
+      data: shopAd,
+    });
   } catch (error) {
-    console.log(error.me);
+    console.error("Error during ad creation:", error.message || error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while adding the shop ad.",
+      error: error.message || "Internal server error",
+    });
   }
 };
+
 
 // getall ....................
 

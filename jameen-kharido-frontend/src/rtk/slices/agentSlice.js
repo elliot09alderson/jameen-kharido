@@ -15,12 +15,53 @@ export const agent_detail = createAsyncThunk(
     }
 );
 
-// Agent slice
+export const agent_uploadDocument = createAsyncThunk(
+    "agent/agent_uploadDocument",
+    async (info, { rejectWithValue, fulfillWithValue }) => {
+        try {
+            const { data } = await api.post("/agent/uploadDocument",info);
+
+            return fulfillWithValue(data); // Directly return data as payload
+        } catch (error) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
+export const agent_update = createAsyncThunk(
+    "agent/agent_update",
+    async (info, { rejectWithValue, fulfillWithValue }) => {
+        try {
+            const { data } = await api.put("/agent",info);
+
+            return fulfillWithValue(data); // Directly return data as payload
+        } catch (error) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
+
+
+export const agent_myads = createAsyncThunk(
+    "agent/agent_myads",
+    async (_, { rejectWithValue, fulfillWithValue }) => {
+        try {
+            const { data } = await api.get("/agent/myads");
+
+            return fulfillWithValue(data); // Directly return data as payload
+        } catch (error) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
+
+
 export const agentReducer = createSlice({
     name: "agent",
     initialState: {
         loader: false,
         AgentInfo: null,
+        AdsInfo: null,
+        documentInfo:null,
         errorMessage: "",
         successMessage: "",
     },
@@ -48,7 +89,50 @@ export const agentReducer = createSlice({
                 state.successMessage = "Agent details fetched successfully!";
                 state.loader = false;
                 state.AgentInfo = payload?.data; // Set the AgentInfo to payload directly
-            });
+            })
+            .addCase(agent_uploadDocument.pending, (state) => {
+                state.loader = true;
+                state.errorMessage = ""; // Clear error message while loading
+                state.successMessage = ""; // Clear success message while loading
+            })
+            .addCase(agent_uploadDocument.rejected, (state, { payload }) => {
+                state.errorMessage = payload?.message || "An error occurred.";
+                state.loader = false;
+            })
+            .addCase(agent_uploadDocument.fulfilled, (state, { payload }) => {
+                state.successMessage = "Agent details fetched successfully!";
+                state.loader = false;
+                state.documentInfo = payload?.data; // Set the AgentInfo to payload directly
+            })
+            .addCase(agent_update.pending, (state) => {
+                state.loader = true;
+                state.errorMessage = ""; // Clear error message while loading
+                state.successMessage = ""; // Clear success message while loading
+            })
+            .addCase(agent_update.rejected, (state, { payload }) => {
+                state.errorMessage = payload?.message || "An error occurred.";
+                state.loader = false;
+            })
+            .addCase(agent_update.fulfilled, (state, { payload }) => {
+                state.successMessage = "Agent details fetched successfully!";
+                state.loader = false;
+                state.AgentInfo = payload?.data; // Set the AgentInfo to payload directly
+            })
+            .addCase(agent_myads.pending, (state) => {
+                state.loader = true;
+                state.errorMessage = ""; // Clear error message while loading
+                state.successMessage = ""; // Clear success message while loading
+            })
+            .addCase(agent_myads.rejected, (state, { payload }) => {
+                state.errorMessage = payload?.message || "An error occurred.";
+                state.loader = false;
+            })
+            .addCase(agent_myads.fulfilled, (state, { payload }) => {
+                state.successMessage = "Agent details fetched successfully!";
+                state.loader = false;
+                state.AdsInfo = payload?.data; // Set the AgentInfo to payload directly
+            })
+            ;
     },
 });
 

@@ -50,7 +50,7 @@ agentRouter.put("/", authMiddleware.agentMiddleware, editAgentDetails);
  * DELETE
  *
  */
-// agentRouter.delete("/homes/:id", deactivateagent);
+// agentRouter.delete("/:id", deactivateagent);
 
 agentRouter.get("/myads", authMiddleware.agentMiddleware, fetchAgentAds);
 

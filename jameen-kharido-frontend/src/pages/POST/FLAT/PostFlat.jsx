@@ -28,8 +28,6 @@ import {
 } from "lucide-react";
 import { upload_flat_Ad, upload_home_Ad } from "../../../rtk/slices/adSlice";
 
-
-
 const amenitiesData = [
   { name: "inverter", label: "Inverter", Icon: BatteryCharging },
   { name: "tv", label: "TV", Icon: Tv },
@@ -67,7 +65,7 @@ const PostFlat = () => {
     title: "",
     description: "",
     pincode: "",
-    type: "flat",
+    type: "Flat",
     location: "",
     nearby: "",
 
@@ -113,7 +111,6 @@ const PostFlat = () => {
     nearby: Yup.string(),
   });
 
-  
   const [previewImages, setPreviewImages] = useState([]);
   const handleSubmit = (values) => {
     const formData = new FormData();
@@ -342,7 +339,7 @@ const PostFlat = () => {
                 className="text-red-500 text-sm mt-1"
               />
             </div>
-              <div className="mb-4">
+            <div className="mb-4">
               <label
                 htmlFor="floor"
                 className="block text-sm font-medium text-gray-700"
@@ -365,7 +362,7 @@ const PostFlat = () => {
                 htmlFor="totalFloors"
                 className="block text-sm font-medium text-gray-700"
               >
-     Total Floors
+                Total Floors
               </label>
               <Field
                 name="totalFloors"

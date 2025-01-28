@@ -38,8 +38,9 @@ const shopAdSchema = new mongoose.Schema(
       required: true,
     },
     furnished: {
-      type: Boolean,
-      default: false,
+      type: String,
+      enum: ["Furnished", "Semi-Furnished", "Unfurnished"], // Only these values are allowed
+      required: true,
     },
     parking: {
       type: Boolean,

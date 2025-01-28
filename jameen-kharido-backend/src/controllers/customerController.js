@@ -422,7 +422,7 @@ export async function editCustomerDetails(req, res) {
       return res.status(200).json({
         success: true,
         message: "Data updated successfully",
-        updatedCustomer,
+        data:updatedCustomer,
       });
     } else {
       return res.status(404).json({

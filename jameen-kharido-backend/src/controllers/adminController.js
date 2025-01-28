@@ -150,7 +150,7 @@ export async function getAdminDeails(req, res) {
     return res.status(200).json({
       success: true,
       message: "Admin details fetched successfully",
-      admin,
+      data:admin,
     });
   } catch (error) {
     console.error(error.message);
@@ -188,6 +188,7 @@ export async function deleteAdmin(req, res) {
     // Return the agent details
     return res.status(200).json({
       success: true,
+      data:admin,
       message: "Admin delete successfully",
     });
   } catch (error) {
@@ -278,7 +279,7 @@ export async function editAdminDetails(req, res) {
     return res.status(200).json({
       success: true,
       message: "Admin data updated successfully",
-      admin: updatedAdmin,
+      data: updatedAdmin,
     });
   } catch (error) {
     console.error(error.message);
@@ -316,7 +317,7 @@ export async function getAllAgents(req, res) {
     return res.status(200).json({
       success: true,
       message: "agent details fetched successfully",
-      agent,
+      data:agent,
     });
   } catch (error) {
     console.error(error.message);
@@ -365,7 +366,7 @@ export async function getAgent(req, res) {
     return res.status(200).json({
       success: true,
       message: "Agent details fetched successfully",
-      agent,
+      data:agent,
     });
   } catch (error) {
     console.error(error.message);
@@ -412,7 +413,7 @@ export async function getAdDetails(req, res) {
       return res.status(404).json({ error: "Ad not found" });
     }
     console.log(adDetail);
-    res.json({ success: true, adDetail: adDetail });
+    res.json({ success: true,  data: adDetail });
   } catch (error) {
     console.error("Error fetching ad detail:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -489,7 +490,7 @@ export async function getAllBlockedAgents(req, res) {
     return res.status(200).json({
       success: true,
       message: "agent details fetched successfully",
-      agent,
+      data:agent,
     });
   } catch (error) {
     console.error(error.message);
@@ -563,7 +564,7 @@ export async function getRequestedAds(req, res) {
     res.status(200).json({
       success: true,
       message: "Unapproved ads fetched successfully",
-      ads: allUnapprovedAds,
+      data: allUnapprovedAds,
     });
   } catch (error) {
     console.error("Error fetching unapproved ads:", error);

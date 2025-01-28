@@ -6,6 +6,8 @@ import { FaSearch } from "react-icons/fa";
 import Searchbar from "./Searchbar";
 import user from "/image/user.webp";
 
+
+
 import {
   Activity,
   BriefcaseBusiness,
@@ -71,7 +73,9 @@ const Navbar = () => {
       {!search && (
         <div className="flex items-center justify-between">
           <div className="">
+            <Link to='admin/login'>
             <img className="w-12 lg:w-24 " src={logo} alt="oyo-icon" />
+            </Link>
           </div>
 
           <div className="flex">

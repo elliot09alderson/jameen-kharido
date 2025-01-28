@@ -131,10 +131,12 @@ export const upload_land_Ad = createAsyncThunk(
 export const upload_shop_Ad = createAsyncThunk(
   "ads/upload_shop_Ad",
   async (formData, { rejectWithValue, fulfillWithValue }) => {
+    console.log(formData, "thisis shop data")
     try {
       const { data } = await api.post(`/ad/shop`, formData, {
         withCredentials: true,
       });
+
 
       return fulfillWithValue(data);
     } catch (error) {

@@ -225,24 +225,24 @@ export async function editAgentDetails(req, res) {
       (key) => updatedData[key] === undefined && delete updatedData[key]
     );
 
-    const updatedCustomer = await Agent.findByIdAndUpdate(
+    const updatedAgent = await Agent.findByIdAndUpdate(
       agentId, // Find customer by email
       { $set: updatedData }, // Update only provided fields
       { new: true, runValidators: true } // Return the updated document and validate updates
     );
 
-    if (!updatedCustomer) {
+    if (!updatedAgent) {
       return res.status(404).json({
         success: false,
-        message: "Customer not found",
+        message: "agent not found",
       });
     }
 
     // Return success response
     return res.status(200).json({
       success: true,
-      message: "Customer data updated successfully",
-      customer: updatedCustomer,
+      message: "agent data updated successfully",
+      data: updatedAgent,
     });
   } catch (error) {
     console.error(error.message);
@@ -368,7 +368,7 @@ export async function uploadAgentDocument(req, res) {
       return res.status(201).json({
         success: true,
         message: "Agent document add successfully",
-        document,
+        data:document,
       });
     }
   } catch (error) {
@@ -412,7 +412,7 @@ export async function fetchAgentAds(req, res) {
     return res.status(200).json({
       success: true,
       message: "Agent details fetched successfully",
-      agent,
+      data:agent,
     });
   } catch (error) {
     console.error(error.message);

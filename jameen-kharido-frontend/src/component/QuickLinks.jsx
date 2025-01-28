@@ -8,7 +8,7 @@ const QuickLinks = () => {
         { title: "Home", path: "/" },
         { title: "AgentADs", path: "/agent/myProfile" },
         { title: "Ads", path: "/ads" },
-        { title: "post", path: "/agent/login" },
+        { title: "post", path: "/agent/post" },
         { title: "Contact", path: "/contact" },
       ].map((item, idx) => (
         <Link to={item.path} className="hover:text-stone-300 px-8  text-lg">

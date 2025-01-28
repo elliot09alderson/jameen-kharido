@@ -34,9 +34,11 @@ const landAdSchema = new mongoose.Schema(
       required: true,
     },
     zoneType: {
-      type: String, // e.g., Residential, Commercial, Agricultural
+      type: String,
+      enum: ["Residential", "Commercial", "Agricultural"], // Restricts the values
       required: true,
     },
+
     roadAccess: {
       type: Boolean,
       default: false,

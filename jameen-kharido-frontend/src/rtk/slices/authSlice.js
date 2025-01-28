@@ -102,7 +102,7 @@ export const agent_login = createAsyncThunk(
   "auth/agent_login",
   async (info, { rejectWithValue, fulfillWithValue }) => {
     try {
-      const { data} = await api.post("auth/agent/login", info);
+      const { data } = await api.post("auth/agent/login", info);
       localStorage.setItem("agentToken", data?.token);
       return fulfillWithValue(data);
     } catch (error) {
@@ -200,7 +200,7 @@ export const authReducer = createSlice({
         console.log(payload);
         state.successMessage = payload.message;
         state.loader = false;
-        state.userInfo = payload.isPresent;
+        state.userInfo = payload.admin;
         redirect("/");
       })
       .addCase(admin_logout.fulfilled, (state, { payload }) => {
@@ -231,7 +231,7 @@ export const authReducer = createSlice({
         state.loader = false;
       })
       .addCase(agent_login.fulfilled, (state, { payload }) => {
-    
+
         state.successMessage = payload.message;
         state.loader = false;
         state.userInfo = payload.data;

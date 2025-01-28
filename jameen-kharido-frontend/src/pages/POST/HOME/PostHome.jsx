@@ -41,6 +41,8 @@ const amenitiesData = [
 const PostHome = () => {
   const [selectedItems, setSelectedItems] = useState([]);
   const dispatch = useDispatch();
+
+  
   const handleIconClick = (itemName) => {
     setSelectedItems((prevSelectedItems) => {
       if (prevSelectedItems.includes(itemName)) {
@@ -50,9 +52,6 @@ const PostHome = () => {
       }
     });
   };
-  useEffect(() => {
-    console.log(selectedItems);
-  }, [selectedItems]);
 
   const getIconColor = (itemName) => {
     return selectedItems.includes(itemName) ? "text-blue-500" : "text-gray-500";
@@ -98,11 +97,8 @@ const PostHome = () => {
     bathrooms: Yup.number()
       .required("Bathrooms are required")
       .typeError("Bathrooms must be a number"),
-
-    nearby: Yup.array().of(Yup.string()),
   });
 
-  
   const [previewImages, setPreviewImages] = useState([]);
   const handleSubmit = (values) => {
     const formData = new FormData();
@@ -114,9 +110,14 @@ const PostHome = () => {
     images.forEach((image) => {
       formData.append("images", image);
     });
-    selectedItems.forEach((ameniti) => {
-      formData.append("amenities", ameniti);
-    });
+
+    // selectedItems.forEach((ameniti) => {
+    //   formData.append("amenities", ameniti);
+    // });
+
+
+
+
     dispatch(upload_home_Ad(formData));
 
     for (let pair of formData.entries()) {

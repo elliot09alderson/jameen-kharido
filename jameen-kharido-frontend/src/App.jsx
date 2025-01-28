@@ -25,6 +25,8 @@ import { useEffect } from "react";
 import { check_session, messageClear } from "./rtk/slices/authSlice.js";
 
 import MyProfile from "./pages/ADS/MyProfile.jsx";
+import PostLand from "./pages/POST/LAND/PostLand.jsx";
+import AdminLogin from "./pages/Login/AdminLogin.jsx";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -34,7 +36,7 @@ const App = () => {
   useEffect(() => {
     dispatch(check_session());
 
-    console.log(userInfo);
+    // console.log(userInfo);
   }, []);
 
   useEffect(() => {
@@ -62,8 +64,7 @@ const App = () => {
           ],
         },
 
-        
-  {
+        {
           path: "myProfile",
 
           children: [
@@ -74,13 +75,10 @@ const App = () => {
                   index: true,
                   element: <MyProfile />,
                 },
-                
               ],
             },
           ],
         },
-         
-        
 
         {
           path: "post",
@@ -98,6 +96,10 @@ const App = () => {
                   element: <PostFlat />,
                 },
                 {
+                  path: "land",
+                  element: <PostLand />,
+                },
+                {
                   path: "home",
                   element: <PostHome />,
                 },
@@ -109,7 +111,6 @@ const App = () => {
             },
           ],
         },
-         
       ],
     },
 
@@ -133,6 +134,10 @@ const App = () => {
         {
           path: "login",
           element: <Login />,
+        },
+        {
+          path: "admin/login",
+          element: <AdminLogin />,
         },
         {
           path: "register",
