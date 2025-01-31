@@ -1,4 +1,5 @@
 import {
+  BlockedAgents,
   createAdmin,
   deleteAdmin,
   deleteAgentAd,
@@ -63,6 +64,13 @@ adminRouter.get(
   authMiddleware.adminMiddleware,
   getAllBlockedAgents
 );
+
+adminRouter.post(
+  "/agents/blocked/:AgentId",
+  authMiddleware.adminMiddleware,
+  BlockedAgents
+);
+
 
 
 

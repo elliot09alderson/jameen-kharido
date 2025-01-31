@@ -8,7 +8,6 @@ import { generateSlug } from "../utils/function.js";
 import fs from "fs";
 import { Agent } from "../models/agent.js";
 
-
 const homePropertySchema = z.object({
   agentId: z.string().nonempty("Agent ID is required"), // Assuming
   title: z.string().nonempty("Title is required"),
@@ -78,6 +77,7 @@ export const postHomeAd = async (req, res) => {
     width: 300,
     height: 300,
     crop: "crop",
+    quality: "auto:low",
   };
 
   try {
@@ -88,7 +88,9 @@ export const postHomeAd = async (req, res) => {
         try {
           const result = await cloudinary.uploader.upload(file.path, {
             folder: "agents",
-            resource_type: "raw",
+            resource_type: "image",
+            format: "jpg", // Converts to JPG to save space
+            quality: "auto",
             transformation: cropParams,
           });
 
@@ -138,7 +140,6 @@ export const postHomeAd = async (req, res) => {
       message: "Agent home ad added successfully",
       data: homeAd,
     });
-
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({
@@ -203,7 +204,9 @@ export const postFlatAd = async (req, res) => {
     nearby,
   } = req.body;
 
-  console.log("this is fsdff", title,
+  console.log(
+    "this is fsdff",
+    title,
     description,
     location,
     pincode,
@@ -217,8 +220,8 @@ export const postFlatAd = async (req, res) => {
     amenities,
     age,
     maintenance,
-    nearby,)
-
+    nearby
+  );
 
   const parsed = flatPropertySchema.safeParse({
     agentId: id,
@@ -283,19 +286,13 @@ export const postFlatAd = async (req, res) => {
       });
     }
 
-
-
-
     const slug = generateSlug(parsed.data.title);
-
 
     const flatAd = await Flat.create({
       ...parsed.data,
       slug,
       images: uploadResults,
     });
-
-
 
     await Agent.findByIdAndUpdate(
       id,
@@ -417,8 +414,6 @@ export const postLandAd = async (req, res) => {
       }
     }
 
-
-
     if (!parsed.success) {
       return res.status(400).json({
         success: false,
@@ -431,13 +426,11 @@ export const postLandAd = async (req, res) => {
 
     const slug = generateSlug(parsed.data.title);
 
-
     const landAd = await Land.create({
       ...parsed.data,
       slug,
       images: uploadResults,
     });
-
 
     await Agent.findByIdAndUpdate(
       id,
@@ -474,18 +467,29 @@ const shopPropertySchema = z.object({
   pincode: z.number().int("Pincode must be an integer").optional(), // Optional integer
   price: z.number().positive("Price must be a positive number"), // Positive number
   area: z.number().positive("Area must be a positive number"), // Positive number
-  floor: z.number().int("Floor must be an integer").positive("Floor must be a positive number").optional(), // Optional positive integer
-  furnished: z.enum(["Furnished", "Semi-Furnished", "Unfurnished"], "Invalid Furnished status"), // Enum validation for furnished status
+  floor: z
+    .number()
+    .int("Floor must be an integer")
+    .positive("Floor must be a positive number")
+    .optional(), // Optional positive integer
+  furnished: z.enum(
+    ["Furnished", "Semi-Furnished", "Unfurnished"],
+    "Invalid Furnished status"
+  ), // Enum validation for furnished status
   parking: z.boolean().default(false), // Boolean with default `false`
   nearby: z.string().optional().default([]), // Optional field with a default empty array
-  images: z.array(z.string().url("Invalid URL for image")).optional().default([]), // Array of valid image URLs
+  images: z
+    .array(z.string().url("Invalid URL for image"))
+    .optional()
+    .default([]), // Array of valid image URLs
 });
 export const postShopAd = async (req, res) => {
   const { id } = req.agent;
 
   // Function to parse numbers and booleans
   const parseIfNumber = (value) => (isNaN(value) ? value : parseInt(value, 10));
-  const parseIfBoolean = (value) => (typeof value === "string" ? value.toLowerCase() === "true" : Boolean(value));
+  const parseIfBoolean = (value) =>
+    typeof value === "string" ? value.toLowerCase() === "true" : Boolean(value);
 
   const {
     title,
@@ -522,7 +526,7 @@ export const postShopAd = async (req, res) => {
     return res.status(400).json({
       success: false,
       error: parsed.error.errors.map((err) => ({
-        path: err.path.join('.'), // Flatten the path array
+        path: err.path.join("."), // Flatten the path array
         message: err.message,
       })),
     });
@@ -596,7 +600,6 @@ export const postShopAd = async (req, res) => {
     });
   }
 };
-
 
 // getall ....................
 

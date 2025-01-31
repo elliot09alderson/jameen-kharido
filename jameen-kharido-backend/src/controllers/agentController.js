@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 import { Document } from "../models/document.js";
+import { Admin } from "../models/admin.js";
 
 const agentSchema = z.object({
   name: z.string().min(3, { message: "Name is required" }),
@@ -54,6 +55,8 @@ export async function createAgent(req, res) {
     whatsappNumber,
   });
 
+  const adminId = "678cb4075bbe1dd554d9d3ca" || "678cb4075bbe1dd554d9d3ca"; // Ensure this is a valid ObjectId
+
   const file = req.file;
   const cropParams = {
     gravity: "auto",
@@ -97,13 +100,22 @@ export async function createAgent(req, res) {
       avatar: result?.url || "",
     });
 
-    if (agent) {
-      return res.status(201).json({
-        success: true,
-        message: "Agent registered successfully",
-        agent,
-      });
+    // Fixing the Admin Update issue
+    const adminUpdate = await Admin.findByIdAndUpdate(
+      adminId,
+      { $push: { agents: agent._id } }, // Corrected $push syntax
+      { new: true }
+    );
+
+    if (!adminUpdate) {
+      return res.status(500).json({ message: "Admin not found" });
     }
+
+    return res.status(201).json({
+      success: true,
+      message: "Agent registered successfully",
+      agent,
+    });
   } catch (error) {
     console.error(error.message);
     return res.status(500).json({
@@ -368,7 +380,7 @@ export async function uploadAgentDocument(req, res) {
       return res.status(201).json({
         success: true,
         message: "Agent document add successfully",
-        data:document,
+        data: document,
       });
     }
   } catch (error) {
@@ -412,7 +424,7 @@ export async function fetchAgentAds(req, res) {
     return res.status(200).json({
       success: true,
       message: "Agent details fetched successfully",
-      data:agent,
+      data: agent,
     });
   } catch (error) {
     console.error(error.message);

@@ -150,7 +150,7 @@ export async function getAdminDeails(req, res) {
     return res.status(200).json({
       success: true,
       message: "Admin details fetched successfully",
-      data:admin,
+      data: admin,
     });
   } catch (error) {
     console.error(error.message);
@@ -188,7 +188,7 @@ export async function deleteAdmin(req, res) {
     // Return the agent details
     return res.status(200).json({
       success: true,
-      data:admin,
+      data: admin,
       message: "Admin delete successfully",
     });
   } catch (error) {
@@ -207,10 +207,10 @@ export async function editAdminDetails(req, res) {
     // Handle the optional image file
     let image = req.file
       ? {
-          mimetype: req.file.mimetype,
-          size: req.file.size,
-          filepath: req.file.path, // Assuming you're using a library like `multer`
-        }
+        mimetype: req.file.mimetype,
+        size: req.file.size,
+        filepath: req.file.path, // Assuming you're using a library like `multer`
+      }
       : undefined;
 
     // Parse and validate the input data using optionalCustomerSchema
@@ -317,7 +317,7 @@ export async function getAllAgents(req, res) {
     return res.status(200).json({
       success: true,
       message: "agent details fetched successfully",
-      data:agent,
+      data: agent,
     });
   } catch (error) {
     console.error(error.message);
@@ -366,7 +366,7 @@ export async function getAgent(req, res) {
     return res.status(200).json({
       success: true,
       message: "Agent details fetched successfully",
-      data:agent,
+      data: agent,
     });
   } catch (error) {
     console.error(error.message);
@@ -413,7 +413,7 @@ export async function getAdDetails(req, res) {
       return res.status(404).json({ error: "Ad not found" });
     }
     console.log(adDetail);
-    res.json({ success: true,  data: adDetail });
+    res.json({ success: true, data: adDetail });
   } catch (error) {
     console.error("Error fetching ad detail:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -490,7 +490,71 @@ export async function getAllBlockedAgents(req, res) {
     return res.status(200).json({
       success: true,
       message: "agent details fetched successfully",
-      data:agent,
+      data: agent,
+    });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+}
+export async function BlockedAgents(req, res) {
+  const { id } = req.admin;
+  const { AgentId } = req.params;
+  console.log(AgentId)
+
+
+  try {
+    // Validate if the agentId is provided
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Amin ID is required",
+      });
+    }
+
+
+    if (!AgentId) {
+      return res.status(400).json({
+        success: false,
+        message: "Agent ID is required",
+      });
+    }
+
+    // Fetch the agent details by ID
+    const agent = await Agent.findByIdAndUpdate(
+      AgentId,
+      { $set: { isAccountDisabled: true } },
+      { new: true } // Returns the updated document
+    );
+
+    if (agent) {
+      await Admin.findByIdAndUpdate(
+        id, // Replace with the actual admin ID
+        { $push: { blockedAgents: AgentId } },
+        { new: true } // Returns the updated document
+      );
+    }
+
+
+
+
+
+    // If agent not found, return a 404 error
+    if (!agent) {
+      return res.status(404).json({
+        success: false,
+        message: "agent not found",
+      });
+    }
+
+    // Return the agent details
+    return res.status(200).json({
+      success: true,
+      message: "agent details fetched successfully",
+      data: agent,
     });
   } catch (error) {
     console.error(error.message);
@@ -503,6 +567,7 @@ export async function getAllBlockedAgents(req, res) {
 
 export async function getVerifiedAgents(req, res) {
   const { id } = req.admin;
+
 
   try {
     // Validate if the agentId is provided
